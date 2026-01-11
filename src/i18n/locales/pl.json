@@ -1,0 +1,141 @@
+{
+  "common": {
+    "add": "Dodaj",
+    "remove": "Usuń",
+    "save": "Zapisz",
+    "export": "Eksportuj JSON",
+    "import": "Importuj JSON",
+    "clearAll": "Wyczyść wszystko",
+    "printPdf": "Drukuj / PDF",
+    "storage": "Pamięć"
+  },
+  "navigation": {
+    "personalInfo": "Dane osobowe",
+    "summary": "Podsumowanie",
+    "experience": "Doświadczenie",
+    "education": "Edukacja",
+    "skills": "Umiejętności",
+    "projects": "Projekty",
+    "certifications": "Certyfikaty",
+    "languages": "Języki"
+  },
+  "preview": {
+    "livePreview": "Podgląd na żywo",
+    "previewDescription": "Zobacz jak wygląda Twoje CV w czasie rzeczywistym",
+    "professionalSummary": "Podsumowanie zawodowe",
+    "workExperience": "Doświadczenie zawodowe",
+    "education": "Edukacja",
+    "skills": "Umiejętności",
+    "projects": "Projekty",
+    "certifications": "Certyfikaty",
+    "languages": "Języki",
+    "email": "Email",
+    "phone": "Telefon",
+    "location": "Lokalizacja",
+    "website": "Strona",
+    "linkedin": "LinkedIn",
+    "github": "GitHub",
+    "gpa": "Średnia ocen",
+    "viewProject": "Zobacz projekt",
+    "viewCredential": "Zobacz certyfikat"
+  },
+  "forms": {
+    "personalInfo": {
+      "title": "Informacje osobiste",
+      "fullName": "Imię i nazwisko",
+      "email": "Email",
+      "phone": "Telefon",
+      "location": "Lokalizacja",
+      "website": "Strona internetowa",
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "photo": "Zdjęcie profilowe",
+      "uploadPrompt": "Kliknij aby przesłać lub przeciągnij i upuść",
+      "uploadFormat": "PNG, JPG do 5MB",
+      "uploading": "Przesyłanie...",
+      "removePhoto": "Usuń zdjęcie"
+    },
+    "summary": {
+      "title": "Podsumowanie zawodowe"
+    },
+    "experience": {
+      "title": "Doświadczenie zawodowe",
+      "addExperience": "Dodaj doświadczenie",
+      "noExperience": "Nie dodano jeszcze doświadczenia zawodowego. Kliknij \"Dodaj doświadczenie\" aby rozpocząć.",
+      "experienceNumber": "Doświadczenie #{number}",
+      "jobTitle": "Stanowisko",
+      "company": "Firma",
+      "location": "Lokalizacja",
+      "startDate": "Data rozpoczęcia",
+      "endDate": "Data zakończenia",
+      "current": "Obecnie tu pracuję",
+      "description": "Opis",
+      "achievements": "Kluczowe osiągnięcia"
+    },
+    "education": {
+      "title": "Edukacja",
+      "addEducation": "Dodaj edukację",
+      "noEducation": "Nie dodano jeszcze edukacji. Kliknij \"Dodaj edukację\" aby rozpocząć.",
+      "educationNumber": "Edukacja #{number}",
+      "degree": "Stopień",
+      "institution": "Uczelnia",
+      "location": "Lokalizacja",
+      "startDate": "Data rozpoczęcia",
+      "endDate": "Data zakończenia",
+      "current": "Obecnie tu studiuję",
+      "gpa": "Średnia ocen (opcjonalnie)",
+      "description": "Opis (opcjonalnie)"
+    },
+    "skills": {
+      "title": "Umiejętności",
+      "addCategory": "Dodaj kategorię",
+      "noSkills": "Nie dodano jeszcze umiejętności. Kliknij \"Dodaj kategorię\" aby rozpocząć.",
+      "categoryNumber": "Kategoria #{number}",
+      "categoryName": "Nazwa kategorii",
+      "skills": "Umiejętności"
+    },
+    "projects": {
+      "title": "Projekty",
+      "addProject": "Dodaj projekt",
+      "noProjects": "Nie dodano jeszcze projektów. Kliknij \"Dodaj projekt\" aby rozpocząć.",
+      "projectNumber": "Projekt #{number}",
+      "name": "Nazwa projektu",
+      "description": "Opis",
+      "technologies": "Technologie",
+      "url": "URL projektu (opcjonalnie)",
+      "githubUrl": "GitHub URL (opcjonalnie)",
+      "startDate": "Data rozpoczęcia (opcjonalnie)",
+      "endDate": "Data zakończenia (opcjonalnie)",
+      "highlights": "Najważniejsze osiągnięcia"
+    },
+    "certifications": {
+      "title": "Certyfikaty",
+      "addCertification": "Dodaj certyfikat",
+      "noCertifications": "Nie dodano jeszcze certyfikatów. Kliknij \"Dodaj certyfikat\" aby rozpocząć.",
+      "certificationNumber": "Certyfikat #{number}",
+      "name": "Nazwa certyfikatu",
+      "issuer": "Wydawca",
+      "date": "Data wydania",
+      "expiryDate": "Data wygaśnięcia (opcjonalnie)",
+      "credentialId": "ID certyfikatu (opcjonalnie)",
+      "credentialUrl": "URL certyfikatu (opcjonalnie)"
+    },
+    "languages": {
+      "title": "Języki",
+      "addLanguage": "Dodaj język",
+      "noLanguages": "Nie dodano jeszcze języków. Kliknij \"Dodaj język\" aby rozpocząć.",
+      "languageNumber": "Język #{number}",
+      "language": "Język",
+      "proficiency": "Poziom biegłości"
+    }
+  },
+  "header": {
+    "title": "Generator CV"
+  },
+  "messages": {
+    "autoSaveNote": "Twoje dane są automatycznie zapisywane w pamięci przeglądarki.",
+    "confirmClear": "Czy na pewno chcesz wyczyścić wszystkie dane CV? Tej operacji nie można cofnąć.",
+    "importError": "Nie udało się zaimportować danych CV. Sprawdź format pliku.",
+    "note": "Uwaga"
+  }
+}

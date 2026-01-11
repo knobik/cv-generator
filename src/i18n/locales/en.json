@@ -1,0 +1,141 @@
+{
+  "common": {
+    "add": "Add",
+    "remove": "Remove",
+    "save": "Save",
+    "export": "Export JSON",
+    "import": "Import JSON",
+    "clearAll": "Clear All",
+    "printPdf": "Print / PDF",
+    "storage": "Storage"
+  },
+  "navigation": {
+    "personalInfo": "Personal Info",
+    "summary": "Summary",
+    "experience": "Experience",
+    "education": "Education",
+    "skills": "Skills",
+    "projects": "Projects",
+    "certifications": "Certifications",
+    "languages": "Languages"
+  },
+  "preview": {
+    "livePreview": "Live Preview",
+    "previewDescription": "See how your CV looks in real-time",
+    "professionalSummary": "Professional Summary",
+    "workExperience": "Work Experience",
+    "education": "Education",
+    "skills": "Skills",
+    "projects": "Projects",
+    "certifications": "Certifications",
+    "languages": "Languages",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "website": "Website",
+    "linkedin": "LinkedIn",
+    "github": "GitHub",
+    "gpa": "GPA",
+    "viewProject": "View Project",
+    "viewCredential": "View Credential"
+  },
+  "forms": {
+    "personalInfo": {
+      "title": "Personal Information",
+      "fullName": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location",
+      "website": "Website",
+      "linkedin": "LinkedIn",
+      "github": "GitHub",
+      "photo": "Profile Photo",
+      "uploadPrompt": "Click to upload or drag and drop",
+      "uploadFormat": "PNG, JPG up to 5MB",
+      "uploading": "Uploading...",
+      "removePhoto": "Remove Photo"
+    },
+    "summary": {
+      "title": "Professional Summary"
+    },
+    "experience": {
+      "title": "Work Experience",
+      "addExperience": "Add Experience",
+      "noExperience": "No work experience added yet. Click \"Add Experience\" to get started.",
+      "experienceNumber": "Experience #{number}",
+      "jobTitle": "Job Title",
+      "company": "Company",
+      "location": "Location",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "current": "I currently work here",
+      "description": "Description",
+      "achievements": "Key Achievements"
+    },
+    "education": {
+      "title": "Education",
+      "addEducation": "Add Education",
+      "noEducation": "No education added yet. Click \"Add Education\" to get started.",
+      "educationNumber": "Education #{number}",
+      "degree": "Degree",
+      "institution": "Institution",
+      "location": "Location",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "current": "Currently studying here",
+      "gpa": "GPA (optional)",
+      "description": "Description (optional)"
+    },
+    "skills": {
+      "title": "Skills",
+      "addCategory": "Add Category",
+      "noSkills": "No skills added yet. Click \"Add Category\" to get started.",
+      "categoryNumber": "Category #{number}",
+      "categoryName": "Category Name",
+      "skills": "Skills"
+    },
+    "projects": {
+      "title": "Projects",
+      "addProject": "Add Project",
+      "noProjects": "No projects added yet. Click \"Add Project\" to get started.",
+      "projectNumber": "Project #{number}",
+      "name": "Project Name",
+      "description": "Description",
+      "technologies": "Technologies",
+      "url": "Project URL (optional)",
+      "githubUrl": "GitHub URL (optional)",
+      "startDate": "Start Date (optional)",
+      "endDate": "End Date (optional)",
+      "highlights": "Key Highlights"
+    },
+    "certifications": {
+      "title": "Certifications",
+      "addCertification": "Add Certification",
+      "noCertifications": "No certifications added yet. Click \"Add Certification\" to get started.",
+      "certificationNumber": "Certification #{number}",
+      "name": "Certification Name",
+      "issuer": "Issuer",
+      "date": "Issue Date",
+      "expiryDate": "Expiry Date (optional)",
+      "credentialId": "Credential ID (optional)",
+      "credentialUrl": "Credential URL (optional)"
+    },
+    "languages": {
+      "title": "Languages",
+      "addLanguage": "Add Language",
+      "noLanguages": "No languages added yet. Click \"Add Language\" to get started.",
+      "languageNumber": "Language #{number}",
+      "language": "Language",
+      "proficiency": "Proficiency Level"
+    }
+  },
+  "header": {
+    "title": "CV Generator"
+  },
+  "messages": {
+    "autoSaveNote": "Your data is automatically saved to your browser's local storage.",
+    "confirmClear": "Are you sure you want to clear all CV data? This cannot be undone.",
+    "importError": "Failed to import CV data. Please check the file format.",
+    "note": "Note"
+  }
+}
