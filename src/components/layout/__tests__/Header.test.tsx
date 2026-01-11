@@ -177,6 +177,7 @@ describe('Header', () => {
 
     test('should not clear if user cancels confirmation', async () => {
       const user = userEvent.setup();
+      const { clearCVData } = await import('@/lib/storage');
       vi.spyOn(window, 'confirm').mockReturnValue(false);
 
       renderWithProvider(<Header />);
@@ -185,7 +186,99 @@ describe('Header', () => {
       await user.click(clearButton);
 
       // Clear would not be called when confirmation is cancelled
-      expect(clearButton).toBeInTheDocument();
+      expect(clearCVData).not.toHaveBeenCalled();
+    });
+
+    test('should clear data when user confirms', async () => {
+      const user = userEvent.setup();
+      const { clearCVData } = await import('@/lib/storage');
+      vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+      renderWithProvider(<Header />);
+
+      const clearButton = screen.getByText('Clear All');
+      await user.click(clearButton);
+
+      // Clear should be called when confirmation is accepted
+      expect(clearCVData).toHaveBeenCalled();
+    });
+  });
+
+  describe('Import Functionality', () => {
+    test('should handle successful file import', async () => {
+      const user = userEvent.setup();
+      const { importCVData } = await import('@/lib/storage');
+
+      // Mock window.location.reload
+      const originalLocation = window.location;
+      delete (window as any).location;
+      window.location = { ...originalLocation, reload: vi.fn() };
+
+      const { container } = renderWithProvider(<Header />);
+      const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+
+      // Create a mock JSON file
+      const mockFile = new File(['{"test": "data"}'], 'cv.json', { type: 'application/json' });
+
+      // Trigger file selection
+      await user.upload(fileInput, mockFile);
+
+      // Wait for FileReader to complete
+      await vi.waitFor(() => {
+        expect(importCVData).toHaveBeenCalledWith('{"test": "data"}');
+      });
+
+      // Restore window.location
+      window.location = originalLocation;
+    });
+
+    test('should handle import error with alert', async () => {
+      const user = userEvent.setup();
+      const { importCVData } = await import('@/lib/storage');
+      const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+      // Make importCVData throw an error
+      vi.mocked(importCVData).mockImplementation(() => {
+        throw new Error('Invalid JSON');
+      });
+
+      const { container } = renderWithProvider(<Header />);
+      const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+
+      const mockFile = new File(['invalid json'], 'cv.json', { type: 'application/json' });
+
+      await user.upload(fileInput, mockFile);
+
+      // Wait for error handling
+      await vi.waitFor(() => {
+        expect(alertSpy).toHaveBeenCalledWith('Failed to import CV data');
+      });
+
+      alertSpy.mockRestore();
+    });
+
+    test('should clear file input after import attempt', async () => {
+      const user = userEvent.setup();
+
+      // Mock window.location.reload
+      const originalLocation = window.location;
+      delete (window as any).location;
+      window.location = { ...originalLocation, reload: vi.fn() };
+
+      const { container } = renderWithProvider(<Header />);
+      const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
+
+      const mockFile = new File(['{"test": "data"}'], 'cv.json', { type: 'application/json' });
+
+      await user.upload(fileInput, mockFile);
+
+      // File input should be cleared
+      await vi.waitFor(() => {
+        expect(fileInput.value).toBe('');
+      });
+
+      // Restore window.location
+      window.location = originalLocation;
     });
   });
 
