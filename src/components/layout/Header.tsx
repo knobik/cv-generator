@@ -3,7 +3,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useCVData } from '@/lib/hooks/useCVData';
-import { exportCVData, importCVData, clearCVData, getStorageSize, formatBytes } from '@/lib/storage';
+import { exportCVData, importCVData, clearCVData, getStorageSize, formatBytes, saveCVData } from '@/lib/storage';
 import { Button } from '../ui/Button';
 import { LanguageSwitcher } from '../ui/LanguageSwitcher';
 import { PrintPreview } from '../cv-preview/PrintPreview';
@@ -42,6 +42,7 @@ export function Header() {
       try {
         const jsonString = event.target?.result as string;
         const importedData = importCVData(jsonString);
+        saveCVData(importedData);
         window.location.reload();
       } catch (error) {
         alert(t('messages.importError'));

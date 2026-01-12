@@ -11,9 +11,9 @@ export function CVPreview() {
   const { personalInfo, professionalSummary, workExperience, education, skills, projects, certifications, languages } = cvData;
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-8 max-w-4xl">
+    <div className="bg-white shadow-lg rounded-lg p-8 max-w-4xl print:shadow-none print:rounded-none print:p-0 print:max-w-none">
       {/* Personal Info Header */}
-      <div className="border-b-2 border-gray-300 pb-6 mb-6">
+      <div className="border-b-2 border-gray-300 pb-6 mb-6 print:mb-4">
         <div className="flex items-start gap-6">
           {personalInfo.photo && (
             <img

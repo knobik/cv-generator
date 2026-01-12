@@ -39,6 +39,27 @@ body {
     -webkit-print-color-adjust: exact;
   }
 
+  /* Hide the header and editor panel when printing from main page */
+  header {
+    display: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+  }
+
+  /* Hide the editor panel grid column */
+  main > div > div:first-child {
+    display: none !important;
+  }
+
+  /* Make the preview panel take full width */
+  main > div {
+    display: block !important;
+  }
+
   /* Hide elements that shouldn't be printed */
   .print\:hidden {
     display: none !important;
@@ -64,6 +85,10 @@ body {
     padding-right: 0 !important;
   }
 
+  .print\:p-0 {
+    padding: 0 !important;
+  }
+
   .print\:max-w-none {
     max-width: none !important;
   }
@@ -80,11 +105,19 @@ body {
   /* Prevent page breaks inside important elements */
   h1, h2, h3, h4, h5, h6 {
     page-break-after: avoid;
+    break-after: avoid;
   }
 
   /* Optimize image rendering */
   img {
     max-width: 100%;
     page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Prevent awkward page breaks */
+  section {
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 }

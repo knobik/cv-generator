@@ -31,7 +31,7 @@ export default function HomePage() {
   const ActiveSectionComponent = sections.find((s) => s.id === activeSection)?.component || PersonalInfoSection;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 print:bg-white">
       <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -66,14 +66,14 @@ export default function HomePage() {
           </div>
 
           {/* Preview Panel */}
-          <div className="lg:sticky lg:top-24 lg:self-start">
-            <div className="mb-4">
+          <div className="lg:sticky lg:top-24 lg:self-start print:static print:p-0">
+            <div className="mb-4 print:hidden">
               <h2 className="text-lg font-semibold text-gray-900">{t('preview.livePreview')}</h2>
               <p className="text-sm text-gray-600">
                 {t('preview.previewDescription')}
               </p>
             </div>
-            <div className="overflow-auto max-h-[calc(100vh-200px)]">
+            <div className="overflow-auto max-h-[calc(100vh-200px)] print:overflow-visible print:max-h-none">
               <CVPreview />
             </div>
           </div>
