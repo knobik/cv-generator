@@ -1,6 +1,17 @@
 {
   "name": "cv-generator",
   "version": "0.1.0",
+  "description": "A CV/Resume generator built with Next.js, React, TypeScript, and Tailwind CSS",
+  "author": "knobik",
+  "license": "MIT",
+  "homepage": "https://knobik.github.io/cv-generator/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/knobik/cv-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/knobik/cv-generator/issues"
+  },
   "private": true,
   "scripts": {
     "dev": "next dev",

@@ -2,6 +2,10 @@
 
 A CV/Resume generator built with Next.js, React, TypeScript, and Tailwind CSS. Vibe coded for fun.
 
+## Demo
+
+**[Live Preview](https://knobik.github.io/cv-generator/)** - Try it out!
+
 ## Features
 
 - Personal information with photo upload
