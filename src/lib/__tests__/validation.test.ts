@@ -436,7 +436,7 @@ describe('Validation Layer', () => {
     })
 
     test('should validate proficiency enum values', () => {
-      const proficiencies = ['Native', 'Fluent', 'Advanced', 'Intermediate', 'Basic']
+      const proficiencies = ['Native', 'C2', 'C1', 'B2', 'B1', 'A2', 'A1']
       proficiencies.forEach((proficiency) => {
         const data = {
           id: 'lang-1',

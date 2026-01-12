@@ -76,7 +76,7 @@ export const certificationSchema = z.object({
 export const languageSchema = z.object({
   id: z.string(),
   language: z.string().min(1, 'Language is required'),
-  proficiency: z.enum(['Native', 'Fluent', 'Advanced', 'Intermediate', 'Basic']),
+  proficiency: z.enum(['Native', 'C2', 'C1', 'B2', 'B1', 'A2', 'A1']),
 });
 
 export const cvDataSchema = z.object({
