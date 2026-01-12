@@ -3,6 +3,8 @@
     "add": "Dodaj",
     "remove": "Usuń",
     "save": "Zapisz",
+    "edit": "Edytuj",
+    "cancel": "Anuluj",
     "export": "Eksportuj JSON",
     "import": "Importuj JSON",
     "clearAll": "Wyczyść wszystko",

@@ -170,6 +170,12 @@ function AchievementsList({
     onChange(achievements.filter((_, i) => i !== index));
   };
 
+  const handleUpdate = (index: number, value: string) => {
+    const updatedAchievements = [...achievements];
+    updatedAchievements[index] = value;
+    onChange(updatedAchievements);
+  };
+
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -181,13 +187,18 @@ function AchievementsList({
           {achievements.map((achievement, index) => (
             <li
               key={index}
-              className="flex items-start gap-2 p-2 bg-gray-50 rounded border border-gray-200"
+              className="flex items-start gap-2"
             >
-              <span className="flex-1 text-sm">{achievement}</span>
+              <input
+                type="text"
+                value={achievement}
+                onChange={(e) => handleUpdate(index, e.target.value)}
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
               <button
                 type="button"
                 onClick={() => handleRemove(index)}
-                className="text-red-600 hover:text-red-800 text-sm"
+                className="text-red-600 hover:text-red-800 text-sm px-2 py-2"
               >
                 {t('common.remove')}
               </button>
