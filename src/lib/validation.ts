@@ -79,6 +79,10 @@ export const languageSchema = z.object({
   proficiency: z.enum(['Native', 'C2', 'C1', 'B2', 'B1', 'A2', 'A1']),
 });
 
+export const gdprClauseSchema = z.object({
+  text: z.string(),
+});
+
 export const cvDataSchema = z.object({
   personalInfo: personalInfoSchema,
   professionalSummary: professionalSummarySchema,
@@ -88,6 +92,7 @@ export const cvDataSchema = z.object({
   projects: z.array(projectSchema),
   certifications: z.array(certificationSchema),
   languages: z.array(languageSchema),
+  gdprClause: gdprClauseSchema,
   metadata: z.object({
     lastUpdated: z.string(),
     version: z.string(),

@@ -19,7 +19,8 @@
     "skills": "Skills",
     "projects": "Projects",
     "certifications": "Certifications",
-    "languages": "Languages"
+    "languages": "Languages",
+    "gdpr": "GDPR Clause"
   },
   "preview": {
     "livePreview": "Live Preview",
@@ -129,6 +130,12 @@
       "languageNumber": "Language #{number}",
       "language": "Language",
       "proficiency": "Proficiency Level"
+    },
+    "gdpr": {
+      "title": "GDPR Clause",
+      "description": "Add a GDPR compliance statement to your CV footer. This is commonly required for job applications in the EU.",
+      "text": "GDPR Text",
+      "helperText": "This clause will appear at the bottom of your CV"
     }
   },
   "header": {

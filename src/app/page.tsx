@@ -11,6 +11,7 @@ import { SkillsSection } from '@/components/cv-editor/SkillsSection';
 import { ProjectsSection } from '@/components/cv-editor/ProjectsSection';
 import { CertificationsSection } from '@/components/cv-editor/CertificationsSection';
 import { LanguagesSection } from '@/components/cv-editor/LanguagesSection';
+import { GDPRSection } from '@/components/cv-editor/GDPRSection';
 import { CVPreview } from '@/components/cv-preview/CVPreview';
 
 export default function HomePage() {
@@ -26,6 +27,7 @@ export default function HomePage() {
     { id: 'projects', labelKey: 'navigation.projects', component: ProjectsSection },
     { id: 'certifications', labelKey: 'navigation.certifications', component: CertificationsSection },
     { id: 'languages', labelKey: 'navigation.languages', component: LanguagesSection },
+    { id: 'gdpr', labelKey: 'navigation.gdpr', component: GDPRSection },
   ];
 
   const ActiveSectionComponent = sections.find((s) => s.id === activeSection)?.component || PersonalInfoSection;

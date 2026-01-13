@@ -19,7 +19,8 @@
     "skills": "Umiejętności",
     "projects": "Projekty",
     "certifications": "Certyfikaty",
-    "languages": "Języki"
+    "languages": "Języki",
+    "gdpr": "Klauzula RODO"
   },
   "preview": {
     "livePreview": "Podgląd na żywo",
@@ -129,6 +130,12 @@
       "languageNumber": "Język #{number}",
       "language": "Język",
       "proficiency": "Poziom biegłości"
+    },
+    "gdpr": {
+      "title": "Klauzula RODO",
+      "description": "Dodaj klauzulę zgodności z RODO do stopki CV. Jest to powszechnie wymagane przy aplikacjach o pracę w UE.",
+      "text": "Treść klauzuli RODO",
+      "helperText": "Ta klauzula pojawi się na dole Twojego CV"
     }
   },
   "header": {

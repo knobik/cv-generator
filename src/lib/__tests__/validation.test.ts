@@ -480,6 +480,9 @@ describe('Validation Layer', () => {
         projects: [],
         certifications: [],
         languages: [],
+        gdprClause: {
+          text: 'GDPR consent clause',
+        },
         metadata: {
           lastUpdated: '2026-01-11T00:00:00.000Z',
           version: '1.0.0',
@@ -555,6 +558,9 @@ describe('Validation Layer', () => {
             proficiency: 'Native',
           },
         ],
+        gdprClause: {
+          text: 'GDPR consent clause',
+        },
         metadata: {
           lastUpdated: '2026-01-11',
           version: '1.0.0',
@@ -661,6 +667,9 @@ describe('Validation Layer', () => {
         projects: [],
         certifications: [],
         languages: [],
+        gdprClause: {
+          text: 'GDPR consent clause',
+        },
         metadata: {
           lastUpdated: '2026-01-11',
           version: '1.0.0',

@@ -8,6 +8,7 @@ import {
   Project,
   Certification,
   Language,
+  GDPRClause,
 } from '@/types/cv'
 
 export const mockPersonalInfo: PersonalInfo = {
@@ -78,6 +79,10 @@ export const mockLanguage: Language = {
   proficiency: 'Native',
 }
 
+export const mockGDPRClause: GDPRClause = {
+  text: 'I hereby give consent for my personal data included in my application to be processed for the purposes of the recruitment process under the European Parliament and Council of the European Union Regulation on the protection of natural persons as of 27 April 2016, with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (Data Protection Directive).',
+}
+
 export const mockCVData: CVData = {
   personalInfo: mockPersonalInfo,
   professionalSummary: mockProfessionalSummary,
@@ -87,6 +92,7 @@ export const mockCVData: CVData = {
   projects: [mockProject],
   certifications: [mockCertification],
   languages: [mockLanguage],
+  gdprClause: mockGDPRClause,
   metadata: {
     lastUpdated: '2026-01-11T00:00:00.000Z',
     version: '1.0.0',

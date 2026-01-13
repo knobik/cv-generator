@@ -73,6 +73,10 @@ export interface Language {
   proficiency: ProficiencyLevel;
 }
 
+export interface GDPRClause {
+  text: string;
+}
+
 export interface CVData {
   personalInfo: PersonalInfo;
   professionalSummary: ProfessionalSummary;
@@ -82,6 +86,7 @@ export interface CVData {
   projects: Project[];
   certifications: Certification[];
   languages: Language[];
+  gdprClause: GDPRClause;
   metadata: {
     lastUpdated: string;
     version: string;
@@ -105,6 +110,9 @@ export const EMPTY_CV_DATA: CVData = {
   projects: [],
   certifications: [],
   languages: [],
+  gdprClause: {
+    text: 'I hereby give consent for my personal data included in my application to be processed for the purposes of the recruitment process under the European Parliament and Council of the European Union Regulation on the protection of natural persons as of 27 April 2016, with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (Data Protection Directive).',
+  },
   metadata: {
     lastUpdated: new Date().toISOString(),
     version: '1.0.0',

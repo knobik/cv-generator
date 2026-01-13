@@ -8,7 +8,7 @@ import { formatDateRange, isEmpty } from '@/lib/utils';
 export function CVPreview() {
   const t = useTranslations();
   const { cvData } = useCVData();
-  const { personalInfo, professionalSummary, workExperience, education, skills, projects, certifications, languages } = cvData;
+  const { personalInfo, professionalSummary, workExperience, education, skills, projects, certifications, languages, gdprClause } = cvData;
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-8 max-w-4xl print:shadow-none print:rounded-none print:p-0 print:max-w-none">
@@ -280,6 +280,15 @@ export function CVPreview() {
             ))}
           </div>
         </section>
+      )}
+
+      {/* GDPR Clause Footer */}
+      {!isEmpty(gdprClause.text) && (
+        <footer className="mt-8 pt-6 border-t border-gray-300">
+          <p className="text-xs text-gray-600 leading-relaxed italic">
+            {gdprClause.text}
+          </p>
+        </footer>
       )}
     </div>
   );
