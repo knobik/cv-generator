@@ -492,6 +492,32 @@ describe('Validation Layer', () => {
       expect(result.success).toBe(true)
     })
 
+    test('should validate CV data without gdprClause', () => {
+      const data = {
+        personalInfo: {
+          fullName: 'John Doe',
+          email: 'john@example.com',
+          phone: '+1234567890',
+          location: 'New York',
+        },
+        professionalSummary: {
+          summary: 'Experienced developer',
+        },
+        workExperience: [],
+        education: [],
+        skills: [],
+        projects: [],
+        certifications: [],
+        languages: [],
+        metadata: {
+          lastUpdated: '2026-01-11T00:00:00.000Z',
+          version: '1.0.0',
+        },
+      }
+      const result = cvDataSchema.safeParse(data)
+      expect(result.success).toBe(true)
+    })
+
     test('should validate all nested sections', () => {
       const data = {
         personalInfo: {

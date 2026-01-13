@@ -17,7 +17,7 @@ export function GDPRSection() {
       <FormTextarea
         label={t('forms.gdpr.text')}
         placeholder="Enter your GDPR compliance clause..."
-        value={gdprClause.text}
+        value={gdprClause?.text || ''}
         onChange={(e) => updateGDPRClause({ text: e.target.value })}
         rows={6}
         showCharCount

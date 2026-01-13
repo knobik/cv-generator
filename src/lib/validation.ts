@@ -92,7 +92,7 @@ export const cvDataSchema = z.object({
   projects: z.array(projectSchema),
   certifications: z.array(certificationSchema),
   languages: z.array(languageSchema),
-  gdprClause: gdprClauseSchema,
+  gdprClause: gdprClauseSchema.optional(),
   metadata: z.object({
     lastUpdated: z.string(),
     version: z.string(),

@@ -283,7 +283,7 @@ export function CVPreview() {
       )}
 
       {/* GDPR Clause Footer */}
-      {!isEmpty(gdprClause.text) && (
+      {gdprClause && !isEmpty(gdprClause.text) && (
         <footer className="mt-8 pt-6 border-t border-gray-300">
           <p className="text-xs text-gray-600 leading-relaxed italic">
             {gdprClause.text}

@@ -315,7 +315,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     setCvData((prev) => {
       const updated = {
         ...prev,
-        gdprClause: { ...prev.gdprClause, ...gdprClause },
+        gdprClause: { ...(prev.gdprClause || { text: '' }), ...gdprClause },
       };
       debouncedSave(updated);
       return updated;
