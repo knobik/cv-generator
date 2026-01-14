@@ -77,25 +77,25 @@ describe('Utility Functions', () => {
   })
 
   describe('formatDate', () => {
-    test('should format date as MM/YYYY', () => {
+    test('should format date as YYYY.MM', () => {
       const result = formatDate('2021-03-15')
-      expect(result).toBe('03/2021')
+      expect(result).toBe('2021.03')
     })
 
     test('should handle Date objects', () => {
       const date = new Date('2021-12-25')
       const result = formatDate(date.toISOString())
-      expect(result).toBe('12/2021')
+      expect(result).toBe('2021.12')
     })
 
     test('should handle date strings', () => {
-      expect(formatDate('2020-01-01')).toBe('01/2020')
-      expect(formatDate('2023-12-31')).toBe('12/2023')
+      expect(formatDate('2020-01-01')).toBe('2020.01')
+      expect(formatDate('2023-12-31')).toBe('2023.12')
     })
 
     test('should pad single-digit months', () => {
       const result = formatDate('2021-05-15')
-      expect(result).toBe('05/2021')
+      expect(result).toBe('2021.05')
     })
 
     test('should return empty string for null', () => {
@@ -111,37 +111,37 @@ describe('Utility Functions', () => {
     })
 
     test('should handle invalid dates', () => {
-      // Note: Invalid dates return 'NaN/NaN' in the current implementation
+      // Note: Invalid dates return 'NaN.NaN' in the current implementation
       // This could be improved to return '' by checking d.getTime()
       const result = formatDate('invalid-date')
-      expect(result).toBe('NaN/NaN')
+      expect(result).toBe('NaN.NaN')
     })
   })
 
   describe('formatDateRange', () => {
     test('should format date range with start and end', () => {
       const result = formatDateRange('2020-01-01', '2021-12-31', false)
-      expect(result).toBe('01/2020 - 12/2021')
+      expect(result).toBe('2020.01 - 2021.12')
     })
 
     test('should show "Present" for null end date', () => {
       const result = formatDateRange('2020-01-01', null, false)
-      expect(result).toBe('01/2020 - Present')
+      expect(result).toBe('2020.01 - Present')
     })
 
     test('should show "Present" when current is true', () => {
       const result = formatDateRange('2020-01-01', '2021-12-31', true)
-      expect(result).toBe('01/2020 - Present')
+      expect(result).toBe('2020.01 - Present')
     })
 
     test('should handle same month/year range', () => {
       const result = formatDateRange('2021-03-01', '2021-03-31', false)
-      expect(result).toBe('03/2021 - 03/2021')
+      expect(result).toBe('2021.03 - 2021.03')
     })
 
     test('should format correctly for different years', () => {
       const result = formatDateRange('2018-06-01', '2022-08-31', false)
-      expect(result).toBe('06/2018 - 08/2022')
+      expect(result).toBe('2018.06 - 2022.08')
     })
 
     test('should prioritize current flag over endDate', () => {
