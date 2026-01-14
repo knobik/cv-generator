@@ -39,7 +39,7 @@ function SegmentedProgressBar({ level, maxLevel = 6 }: { level: number; maxLevel
 // Section heading component
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-2xl font-normal text-teal-700 mb-4 pb-2 border-b-2 border-teal-700">
+    <h2 className="text-lg font-normal text-teal-700 mb-2 pb-1 border-b-2 border-teal-700">
       {children}
     </h2>
   );
@@ -48,7 +48,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 // Left column section heading (smaller)
 function LeftSectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-xl font-normal text-teal-700 mb-3 pb-1 border-b-2 border-teal-700">
+    <h2 className="text-base font-normal text-teal-700 mb-2 pb-1 border-b-2 border-teal-700">
       {children}
     </h2>
   );
@@ -70,8 +70,8 @@ export function CVPreview() {
   return (
     <div className="bg-white shadow-lg rounded-lg max-w-4xl print:shadow-none print:rounded-none print:max-w-none">
       {/* Header - Two column layout matching content below */}
-      <div className="bg-gray-100 py-5 px-8 print:bg-gray-100">
-        <div className="flex flex-col md:flex-row gap-8 print:flex-row">
+      <div className="bg-gray-100 py-4 px-8 print:bg-gray-100">
+        <div className="flex flex-col md:flex-row gap-6 print:flex-row">
           {/* Left Column - Photo */}
           <div className="w-full md:w-1/3 print:w-1/3 flex justify-center items-center">
             {personalInfo.photo && (
@@ -99,13 +99,13 @@ export function CVPreview() {
       </div>
 
       {/* Main Content - Two Column Layout */}
-      <div className="flex flex-col md:flex-row px-8 py-6 gap-8 print:flex-row">
+      <div className="flex flex-col md:flex-row px-8 py-4 gap-6 print:flex-row">
         {/* Left Column - Contact & Summary */}
         <div className="w-full md:w-1/3 print:w-1/3">
           {/* Contact Section */}
-          <section className="mb-6">
+          <section className="mb-4">
             <LeftSectionHeading>{t('preview.contact')}</LeftSectionHeading>
-            <div className="space-y-2 text-sm text-gray-700">
+            <div className="space-y-1 text-sm text-gray-700">
               {personalInfo.location && (
                 <p>{personalInfo.location}</p>
               )}
@@ -150,7 +150,7 @@ export function CVPreview() {
 
           {/* Summary Section */}
           {!isEmpty(professionalSummary.summary) && (
-            <section className="mb-6">
+            <section className="mb-4">
               <LeftSectionHeading>{t('preview.professionalSummary')}</LeftSectionHeading>
               <p className="text-sm text-gray-700 leading-relaxed">{professionalSummary.summary}</p>
             </section>
@@ -158,7 +158,7 @@ export function CVPreview() {
 
           {/* Languages with segmented progress bars */}
           {languages.length > 0 && (
-            <section className="mb-6">
+            <section className="mb-4">
               <LeftSectionHeading>{t('preview.languages')}</LeftSectionHeading>
               <div className="space-y-3">
                 {languages.map((lang) => (
@@ -179,13 +179,13 @@ export function CVPreview() {
         <div className="w-full md:w-2/3 print:w-2/3">
           {/* Work Experience */}
           {workExperience.length > 0 && (
-            <section className="mb-6">
+            <section className="mb-4">
               <SectionHeading>{t('preview.workExperience')}</SectionHeading>
-              <div className="space-y-5">
+              <div className="space-y-3">
                 {workExperience.map((exp) => (
                   <div key={exp.id}>
                     <div className="flex justify-between items-start mb-1">
-                      <h3 className="text-lg font-semibold text-teal-700">{exp.jobTitle}</h3>
+                      <h3 className="text-base font-semibold text-teal-700">{exp.jobTitle}</h3>
                       <span className="text-sm text-gray-500 whitespace-nowrap ml-4">
                         {formatDateRange(exp.startDate, exp.endDate, exp.current, presentText)}
                       </span>
@@ -211,14 +211,14 @@ export function CVPreview() {
 
           {/* Education */}
           {education.length > 0 && (
-            <section className="mb-6">
+            <section className="mb-4">
               <SectionHeading>{t('preview.education')}</SectionHeading>
-              <div className="space-y-4">
+              <div className="space-y-2">
                 {education.map((edu) => (
                   <div key={edu.id}>
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="text-lg font-semibold text-teal-700">{edu.degree}</h3>
+                        <h3 className="text-base font-semibold text-teal-700">{edu.degree}</h3>
                         <p className="text-sm text-gray-500 italic">
                           {edu.institution}, {edu.location}
                         </p>
@@ -237,9 +237,9 @@ export function CVPreview() {
 
           {/* Skills - Inline comma-separated */}
           {skills.length > 0 && (
-            <section className="mb-6">
+            <section className="mb-4">
               <SectionHeading>{t('preview.skills')}</SectionHeading>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 {skills.map((category) => (
                   <div key={category.id}>
                     {category.categoryName && (
@@ -256,12 +256,12 @@ export function CVPreview() {
 
           {/* Projects */}
           {projects.length > 0 && (
-            <section className="mb-6">
+            <section className="mb-4">
               <SectionHeading>{t('preview.projects')}</SectionHeading>
               <div className="space-y-4">
                 {projects.map((project) => (
                   <div key={project.id}>
-                    <h3 className="text-lg font-semibold text-teal-700">{project.name}</h3>
+                    <h3 className="text-base font-semibold text-teal-700">{project.name}</h3>
                     {project.description && (
                       <p className="text-sm text-gray-700 mb-2">{project.description}</p>
                     )}
@@ -307,7 +307,7 @@ export function CVPreview() {
 
           {/* Certifications */}
           {certifications.length > 0 && (
-            <section className="mb-6">
+            <section className="mb-4">
               <SectionHeading>{t('preview.certifications')}</SectionHeading>
               <div className="space-y-3">
                 {certifications.map((cert) => (
@@ -335,7 +335,7 @@ export function CVPreview() {
 
       {/* GDPR Clause Footer */}
       {gdprClause && !isEmpty(gdprClause.text) && (
-        <footer className="px-8 py-4 border-t border-gray-300">
+        <footer className="px-8 py-2 border-t border-gray-300">
           <p className="text-xs text-gray-500 leading-relaxed italic">
             {gdprClause.text}
           </p>
