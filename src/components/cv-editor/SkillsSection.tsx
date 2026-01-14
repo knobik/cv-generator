@@ -89,6 +89,9 @@ function SkillsList({
   const t = useTranslations('forms.skills');
   const tCommon = useTranslations('common');
   const [newSkill, setNewSkill] = useState('');
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
   const handleAdd = () => {
     if (newSkill.trim()) {
@@ -101,6 +104,62 @@ function SkillsList({
     onChange(skills.filter((_, i) => i !== index));
   };
 
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+    // Set drag image to be slightly transparent
+    if (e.currentTarget instanceof HTMLElement) {
+      e.dataTransfer.setDragImage(e.currentTarget, 0, 0);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (dragOverIndex !== index) {
+      setDragOverIndex(index);
+    }
+  };
+
+  const handleContainerDragLeave = (e: React.DragEvent) => {
+    // Only clear if we're leaving the container entirely
+    if (containerRef.current && !containerRef.current.contains(e.relatedTarget as Node)) {
+      setDragOverIndex(null);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === dropIndex) {
+      setDraggedIndex(null);
+      setDragOverIndex(null);
+      return;
+    }
+
+    const newSkills = [...skills];
+    const [draggedSkill] = newSkills.splice(draggedIndex, 1);
+    const adjustedDropIndex = draggedIndex < dropIndex ? dropIndex : dropIndex;
+    newSkills.splice(adjustedDropIndex, 0, draggedSkill);
+    onChange(newSkills);
+
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  // Calculate where to show the placeholder
+  const getPlaceholderPosition = (index: number): 'before' | 'after' | null => {
+    if (draggedIndex === null || dragOverIndex === null) return null;
+    if (dragOverIndex !== index) return null;
+    if (draggedIndex === index) return null;
+
+    return draggedIndex > index ? 'before' : 'after';
+  };
+
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -108,22 +167,58 @@ function SkillsList({
       </label>
 
       {skills.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-3">
-          {skills.map((skill, index) => (
-            <span
-              key={index}
-              className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
-            >
-              {skill}
-              <button
-                type="button"
-                onClick={() => handleRemove(index)}
-                className="text-blue-700 hover:text-blue-900 font-bold"
-              >
-                ×
-              </button>
-            </span>
-          ))}
+        <div
+          ref={containerRef}
+          className="flex flex-wrap gap-2 mb-3"
+          onDragLeave={handleContainerDragLeave}
+        >
+          {skills.map((skill, index) => {
+            const placeholderPos = getPlaceholderPosition(index);
+            const isDragging = draggedIndex === index;
+
+            return (
+              <React.Fragment key={index}>
+                {placeholderPos === 'before' && (
+                  <span
+                    className="inline-flex items-center px-3 py-1 border-2 border-dashed border-blue-400 rounded-full text-sm text-blue-400 bg-blue-50"
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleDrop(e, index)}
+                  >
+                    {skills[draggedIndex!]}
+                  </span>
+                )}
+                <span
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDrop={(e) => handleDrop(e, index)}
+                  onDragEnd={handleDragEnd}
+                  className={`inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm cursor-grab active:cursor-grabbing select-none ${
+                    isDragging ? 'opacity-30' : ''
+                  }`}
+                >
+                  {skill}
+                  <button
+                    type="button"
+                    onClick={() => handleRemove(index)}
+                    className="text-blue-700 hover:text-blue-900 font-bold"
+                    title="Remove"
+                  >
+                    ×
+                  </button>
+                </span>
+                {placeholderPos === 'after' && (
+                  <span
+                    className="inline-flex items-center px-3 py-1 border-2 border-dashed border-blue-400 rounded-full text-sm text-blue-400 bg-blue-50"
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleDrop(e, index)}
+                  >
+                    {skills[draggedIndex!]}
+                  </span>
+                )}
+              </React.Fragment>
+            );
+          })}
         </div>
       )}
 
