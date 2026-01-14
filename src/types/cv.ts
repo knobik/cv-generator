@@ -65,7 +65,7 @@ export interface Certification {
   credentialUrl?: string;
 }
 
-export type ProficiencyLevel = 'Native' | 'C2' | 'C1' | 'B2' | 'B1' | 'A2' | 'A1';
+export type ProficiencyLevel = 'Native' | 'C2' | 'C2+' | 'C1' | 'C1+' | 'B2' | 'B2+' | 'B1' | 'B1+' | 'A2' | 'A2+' | 'A1' | 'A1+';
 
 export interface Language {
   id: string;

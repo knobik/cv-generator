@@ -10,11 +10,17 @@ import { ProficiencyLevel } from '@/types/cv';
 function getProficiencyLevel(proficiency: ProficiencyLevel): number {
   const levels: Record<ProficiencyLevel, number> = {
     'A1': 1,
+    'A1+': 1,
     'A2': 2,
+    'A2+': 2,
     'B1': 3,
+    'B1+': 3,
     'B2': 4,
+    'B2+': 4,
     'C1': 5,
+    'C1+': 5,
     'C2': 6,
+    'C2+': 6,
     'Native': 6,
   };
   return levels[proficiency] || 3;

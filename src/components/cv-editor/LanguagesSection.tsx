@@ -9,7 +9,7 @@ import { FormInput } from '../form/FormInput';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 
-const proficiencyLevels: ProficiencyLevel[] = ['Native', 'C2', 'C1', 'B2', 'B1', 'A2', 'A1'];
+const proficiencyLevels: ProficiencyLevel[] = ['Native', 'C2', 'C2+', 'C1', 'C1+', 'B2', 'B2+', 'B1', 'B1+', 'A2', 'A2+', 'A1', 'A1+'];
 
 export function LanguagesSection() {
   const t = useTranslations('forms.languages');
