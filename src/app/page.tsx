@@ -38,7 +38,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-gray-50 print:bg-white">
       <Header />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Editor Panel */}
           <div className="space-y-4">
