@@ -12,8 +12,12 @@ import { Card } from '../ui/Card';
 export function SkillsSection() {
   const t = useTranslations('forms.skills');
   const tCommon = useTranslations('common');
-  const { cvData, addSkillCategory, updateSkillCategory, removeSkillCategory } = useCVData();
+  const { cvData, addSkillCategory, updateSkillCategory, removeSkillCategory, reorderSkillCategories } = useCVData();
   const { skills } = cvData;
+
+  const [draggedCategoryIndex, setDraggedCategoryIndex] = useState<number | null>(null);
+  const [dragOverCategoryIndex, setDragOverCategoryIndex] = useState<number | null>(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
   const handleAdd = () => {
     const newCategory: SkillCategory = {
@@ -22,6 +26,52 @@ export function SkillsSection() {
       skills: [],
     };
     addSkillCategory(newCategory);
+  };
+
+  const handleCategoryDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedCategoryIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', 'category');
+  };
+
+  const handleCategoryDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (dragOverCategoryIndex !== index) {
+      setDragOverCategoryIndex(index);
+    }
+  };
+
+  const handleContainerDragLeave = (e: React.DragEvent) => {
+    if (containerRef.current && !containerRef.current.contains(e.relatedTarget as Node)) {
+      setDragOverCategoryIndex(null);
+    }
+  };
+
+  const handleCategoryDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    if (draggedCategoryIndex === null || draggedCategoryIndex === dropIndex) {
+      setDraggedCategoryIndex(null);
+      setDragOverCategoryIndex(null);
+      return;
+    }
+
+    reorderSkillCategories(draggedCategoryIndex, dropIndex);
+    setDraggedCategoryIndex(null);
+    setDragOverCategoryIndex(null);
+  };
+
+  const handleCategoryDragEnd = () => {
+    setDraggedCategoryIndex(null);
+    setDragOverCategoryIndex(null);
+  };
+
+  const getCategoryPlaceholderPosition = (index: number): 'before' | 'after' | null => {
+    if (draggedCategoryIndex === null || dragOverCategoryIndex === null) return null;
+    if (dragOverCategoryIndex !== index) return null;
+    if (draggedCategoryIndex === index) return null;
+
+    return draggedCategoryIndex > index ? 'before' : 'after';
   };
 
   return (
@@ -40,39 +90,84 @@ export function SkillsSection() {
           {t('noSkills')}
         </p>
       ) : (
-        <div className="space-y-6">
-          {skills.map((category, index) => (
-            <div key={category.id} className="border border-gray-200 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-medium text-gray-900">{t('categoryNumber', { number: index + 1 })}</h3>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={() => removeSkillCategory(category.id)}
+        <div
+          ref={containerRef}
+          className="space-y-4"
+          onDragLeave={handleContainerDragLeave}
+        >
+          {skills.map((category, index) => {
+            const placeholderPos = getCategoryPlaceholderPosition(index);
+            const isDragging = draggedCategoryIndex === index;
+
+            return (
+              <React.Fragment key={category.id}>
+                {placeholderPos === 'before' && (
+                  <div
+                    className="border-2 border-dashed border-blue-400 rounded-lg p-4 bg-blue-50"
+                    onDragOver={(e) => handleCategoryDragOver(e, index)}
+                    onDrop={(e) => handleCategoryDrop(e, index)}
+                  >
+                    <div className="text-blue-400 font-medium">
+                      {skills[draggedCategoryIndex!]?.categoryName || t('categoryNumber', { number: draggedCategoryIndex! + 1 })}
+                    </div>
+                  </div>
+                )}
+                <div
+                  draggable
+                  onDragStart={(e) => handleCategoryDragStart(e, index)}
+                  onDragOver={(e) => handleCategoryDragOver(e, index)}
+                  onDrop={(e) => handleCategoryDrop(e, index)}
+                  onDragEnd={handleCategoryDragEnd}
+                  className={`border border-gray-200 rounded-lg p-4 bg-white cursor-grab active:cursor-grabbing ${
+                    isDragging ? 'opacity-30' : ''
+                  }`}
                 >
-                  {tCommon('remove')}
-                </Button>
-              </div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-medium text-gray-900 flex items-center gap-2">
+                      <span className="text-gray-400 cursor-grab">⋮⋮</span>
+                      {t('categoryNumber', { number: index + 1 })}
+                    </h3>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => removeSkillCategory(category.id)}
+                    >
+                      {tCommon('remove')}
+                    </Button>
+                  </div>
 
-              <div className="space-y-4">
-                <FormInput
-                  label={t('categoryName')}
-                  placeholder="e.g., Programming Languages, Tools, Frameworks"
-                  value={category.categoryName}
-                  onChange={(e) =>
-                    updateSkillCategory(category.id, { categoryName: e.target.value })
-                  }
-                />
+                  <div className="space-y-4">
+                    <FormInput
+                      label={t('categoryName')}
+                      placeholder="e.g., Programming Languages, Tools, Frameworks"
+                      value={category.categoryName}
+                      onChange={(e) =>
+                        updateSkillCategory(category.id, { categoryName: e.target.value })
+                      }
+                    />
 
-                <SkillsList
-                  skills={category.skills}
-                  onChange={(skills) =>
-                    updateSkillCategory(category.id, { skills })
-                  }
-                />
-              </div>
-            </div>
-          ))}
+                    <SkillsList
+                      skills={category.skills}
+                      onChange={(skills) =>
+                        updateSkillCategory(category.id, { skills })
+                      }
+                    />
+                  </div>
+                </div>
+                {placeholderPos === 'after' && (
+                  <div
+                    className="border-2 border-dashed border-blue-400 rounded-lg p-4 bg-blue-50"
+                    onDragOver={(e) => handleCategoryDragOver(e, index)}
+                    onDrop={(e) => handleCategoryDrop(e, index)}
+                  >
+                    <div className="text-blue-400 font-medium">
+                      {skills[draggedCategoryIndex!]?.categoryName || t('categoryNumber', { number: draggedCategoryIndex! + 1 })}
+                    </div>
+                  </div>
+                )}
+              </React.Fragment>
+            );
+          })}
         </div>
       )}
     </Card>

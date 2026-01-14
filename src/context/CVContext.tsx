@@ -31,6 +31,7 @@ interface CVContextType {
   addSkillCategory: (category: SkillCategory) => void;
   updateSkillCategory: (id: string, category: Partial<SkillCategory>) => void;
   removeSkillCategory: (id: string) => void;
+  reorderSkillCategories: (fromIndex: number, toIndex: number) => void;
   addProject: (project: Project) => void;
   updateProject: (id: string, project: Partial<Project>) => void;
   removeProject: (id: string) => void;
@@ -206,6 +207,20 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
       const updated = {
         ...prev,
         skills: prev.skills.filter((skill) => skill.id !== id),
+      };
+      debouncedSave(updated);
+      return updated;
+    });
+  }, [debouncedSave]);
+
+  const reorderSkillCategories = useCallback((fromIndex: number, toIndex: number) => {
+    setCvData((prev) => {
+      const newSkills = [...prev.skills];
+      const [movedCategory] = newSkills.splice(fromIndex, 1);
+      newSkills.splice(toIndex, 0, movedCategory);
+      const updated = {
+        ...prev,
+        skills: newSkills,
       };
       debouncedSave(updated);
       return updated;
@@ -417,6 +432,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     addSkillCategory,
     updateSkillCategory,
     removeSkillCategory,
+    reorderSkillCategories,
     addProject,
     updateProject,
     removeProject,
