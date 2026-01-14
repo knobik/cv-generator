@@ -6,18 +6,34 @@ import { useCVData } from '@/lib/hooks/useCVData';
 import { formatDateRange, isEmpty } from '@/lib/utils';
 import { ProficiencyLevel } from '@/types/cv';
 
-// Helper to get proficiency percentage for progress bar
-function getProficiencyPercentage(proficiency: ProficiencyLevel): number {
+// Helper to get proficiency level (1-6 scale) for segmented progress bar
+function getProficiencyLevel(proficiency: ProficiencyLevel): number {
   const levels: Record<ProficiencyLevel, number> = {
-    'Native': 100,
-    'C2': 95,
-    'C1': 80,
-    'B2': 65,
-    'B1': 50,
-    'A2': 35,
-    'A1': 20,
+    'A1': 1,
+    'A2': 2,
+    'B1': 3,
+    'B2': 4,
+    'C1': 5,
+    'C2': 6,
+    'Native': 6,
   };
-  return levels[proficiency] || 50;
+  return levels[proficiency] || 3;
+}
+
+// Segmented progress bar component
+function SegmentedProgressBar({ level, maxLevel = 6 }: { level: number; maxLevel?: number }) {
+  return (
+    <div className="flex gap-1">
+      {Array.from({ length: maxLevel }).map((_, idx) => (
+        <div
+          key={idx}
+          className={`h-2 flex-1 rounded-sm ${
+            idx < level ? 'bg-teal-600' : 'bg-gray-200'
+          }`}
+        />
+      ))}
+    </div>
+  );
 }
 
 // Section heading component
@@ -53,29 +69,34 @@ export function CVPreview() {
 
   return (
     <div className="bg-white shadow-lg rounded-lg max-w-4xl print:shadow-none print:rounded-none print:max-w-none">
-      {/* Header - Centered name and title */}
-      <div className="bg-gray-100 py-8 px-8 text-center print:bg-gray-100">
-        <h1 className="text-4xl tracking-[0.3em] uppercase mb-2">
-          <span className="font-bold">{firstName}</span>
-          {lastName && <span className="font-light text-gray-600"> {lastName}</span>}
-        </h1>
-        {workExperience.length > 0 && workExperience[0].jobTitle && (
-          <p className="text-sm tracking-[0.2em] uppercase text-gray-500">
-            {workExperience[0].jobTitle}
-          </p>
-        )}
-      </div>
+      {/* Header - Two column layout matching content below */}
+      <div className="bg-gray-100 py-5 px-8 print:bg-gray-100">
+        <div className="flex flex-col md:flex-row gap-8 print:flex-row">
+          {/* Left Column - Photo */}
+          <div className="w-full md:w-1/3 print:w-1/3 flex justify-center items-center">
+            {personalInfo.photo && (
+              <img
+                src={personalInfo.photo}
+                alt={personalInfo.fullName}
+                className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
+              />
+            )}
+          </div>
 
-      {/* Profile Photo - Centered */}
-      {personalInfo.photo && (
-        <div className="flex justify-center -mt-12 mb-4">
-          <img
-            src={personalInfo.photo}
-            alt={personalInfo.fullName}
-            className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md"
-          />
+          {/* Right Column - Name and Title */}
+          <div className="w-full md:w-2/3 print:w-2/3 flex flex-col justify-center items-center">
+            <h1 className="text-2xl tracking-[0.2em] uppercase mb-2">
+              <span className="font-bold">{firstName}</span>
+              {lastName && <span className="font-light text-gray-600"> {lastName}</span>}
+            </h1>
+            {workExperience.length > 0 && workExperience[0].jobTitle && (
+              <p className="text-sm tracking-[0.2em] uppercase text-gray-500">
+                {workExperience[0].jobTitle}
+              </p>
+            )}
+          </div>
         </div>
-      )}
+      </div>
 
       {/* Main Content - Two Column Layout */}
       <div className="flex flex-col md:flex-row px-8 py-6 gap-8 print:flex-row">
@@ -132,6 +153,24 @@ export function CVPreview() {
             <section className="mb-6">
               <LeftSectionHeading>{t('preview.professionalSummary')}</LeftSectionHeading>
               <p className="text-sm text-gray-700 leading-relaxed">{professionalSummary.summary}</p>
+            </section>
+          )}
+
+          {/* Languages with segmented progress bars */}
+          {languages.length > 0 && (
+            <section className="mb-6">
+              <LeftSectionHeading>{t('preview.languages')}</LeftSectionHeading>
+              <div className="space-y-3">
+                {languages.map((lang) => (
+                  <div key={lang.id}>
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-medium text-gray-800">{lang.language}</span>
+                      <span className="text-sm text-gray-500">{lang.proficiency}</span>
+                    </div>
+                    <SegmentedProgressBar level={getProficiencyLevel(lang.proficiency)} />
+                  </div>
+                ))}
+              </div>
             </section>
           )}
         </div>
@@ -291,28 +330,6 @@ export function CVPreview() {
             </section>
           )}
 
-          {/* Languages with progress bars */}
-          {languages.length > 0 && (
-            <section className="mb-6">
-              <SectionHeading>{t('preview.languages')}</SectionHeading>
-              <div className="space-y-3">
-                {languages.map((lang) => (
-                  <div key={lang.id}>
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="font-medium text-gray-800">{lang.language}</span>
-                      <span className="text-sm text-gray-500">{lang.proficiency}</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-teal-600 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${getProficiencyPercentage(lang.proficiency)}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
         </div>
       </div>
 
