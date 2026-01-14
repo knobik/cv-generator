@@ -83,6 +83,15 @@ export const gdprClauseSchema = z.object({
   text: z.string(),
 });
 
+export const interestSchema = z.object({
+  id: z.string(),
+  name: z.string().min(1, 'Interest is required'),
+});
+
+export const settingsSchema = z.object({
+  fontSize: z.number().min(8).max(24),
+});
+
 export const cvDataSchema = z.object({
   personalInfo: personalInfoSchema,
   professionalSummary: professionalSummarySchema,
@@ -92,10 +101,13 @@ export const cvDataSchema = z.object({
   projects: z.array(projectSchema),
   certifications: z.array(certificationSchema),
   languages: z.array(languageSchema),
+  interests: z.array(interestSchema).optional(),
   gdprClause: gdprClauseSchema.optional(),
+  settings: settingsSchema.optional(),
   metadata: z.object({
     lastUpdated: z.string(),
     version: z.string(),
+    locale: z.string().optional(),
   }),
 });
 
