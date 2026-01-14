@@ -68,7 +68,7 @@ export function CVPreview() {
   const presentText = t('preview.present');
 
   return (
-    <div className="bg-white shadow-lg rounded-lg max-w-4xl print:shadow-none print:rounded-none print:max-w-none">
+    <div className="bg-white shadow-lg rounded-lg max-w-4xl print:shadow-none print:rounded-none print:max-w-none" style={{ fontSize: '12px' }}>
       {/* Header - Two column layout matching content below */}
       <div className="bg-gray-100 py-3 px-8 print:bg-gray-100">
         <div className="flex flex-col md:flex-row gap-4 print:flex-row">
