@@ -44,7 +44,8 @@
     "gpa": "GPA",
     "viewProject": "View Project",
     "viewCredential": "View Credential",
-    "present": "Present"
+    "present": "Present",
+    "fontSize": "Font size"
   },
   "forms": {
     "personalInfo": {

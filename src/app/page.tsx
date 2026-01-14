@@ -14,15 +14,18 @@ import { LanguagesSection } from '@/components/cv-editor/LanguagesSection';
 import { InterestsSection } from '@/components/cv-editor/InterestsSection';
 import { GDPRSection } from '@/components/cv-editor/GDPRSection';
 import { CVPreview } from '@/components/cv-preview/CVPreview';
+import { useCVData } from '@/lib/hooks/useCVData';
 
 // A4 dimensions in pixels at 96 DPI
 const A4_WIDTH_PX = 794; // 210mm
 
 export default function HomePage() {
   const t = useTranslations();
+  const { cvData, updateSettings } = useCVData();
   const [activeSection, setActiveSection] = useState('personal');
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const [previewScale, setPreviewScale] = useState(0.5);
+  const fontSize = cvData.settings?.fontSize ?? 16;
 
   // Calculate scale to fit A4 page in container
   useEffect(() => {
@@ -92,10 +95,29 @@ export default function HomePage() {
           {/* Preview Panel */}
           <div className="lg:sticky lg:top-24 lg:self-start print:static print:p-0">
             <div className="mb-4 print:hidden">
-              <h2 className="text-lg font-semibold text-gray-900">{t('preview.livePreview')}</h2>
-              <p className="text-sm text-gray-600">
-                {t('preview.previewDescription')}
-              </p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">{t('preview.livePreview')}</h2>
+                  <p className="text-sm text-gray-600">
+                    {t('preview.previewDescription')}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <label htmlFor="fontSize" className="text-sm text-gray-600">
+                    {t('preview.fontSize')}:
+                  </label>
+                  <input
+                    type="number"
+                    id="fontSize"
+                    min="8"
+                    max="16"
+                    value={fontSize}
+                    onChange={(e) => updateSettings({ fontSize: Number(e.target.value) })}
+                    className="w-16 px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-500">px</span>
+                </div>
+              </div>
             </div>
             <div
               ref={previewContainerRef}

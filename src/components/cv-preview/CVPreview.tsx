@@ -39,7 +39,7 @@ function SegmentedProgressBar({ level, maxLevel = 6 }: { level: number; maxLevel
 // Section heading component
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-lg font-normal text-teal-700 mb-2 pb-1 border-b-2 border-teal-700">
+    <h2 className="em-text-lg font-normal text-teal-700 mb-2 pb-1 border-b-2 border-teal-700">
       {children}
     </h2>
   );
@@ -48,7 +48,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 // Left column section heading (smaller)
 function LeftSectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-base font-normal text-teal-700 mb-2 pb-1 border-b-2 border-teal-700">
+    <h2 className="em-text-base font-normal text-teal-700 mb-2 pb-1 border-b-2 border-teal-700">
       {children}
     </h2>
   );
@@ -57,7 +57,8 @@ function LeftSectionHeading({ children }: { children: React.ReactNode }) {
 export function CVPreview() {
   const t = useTranslations();
   const { cvData } = useCVData();
-  const { personalInfo, professionalSummary, workExperience, education, skills, projects, certifications, languages, interests, gdprClause } = cvData;
+  const { personalInfo, professionalSummary, workExperience, education, skills, projects, certifications, languages, interests, gdprClause, settings } = cvData;
+  const fontSize = settings?.fontSize ?? 16;
 
   // Split name for styling (first name bold, rest regular)
   const nameParts = (personalInfo.fullName || 'Your Name').split(' ');
@@ -68,7 +69,7 @@ export function CVPreview() {
   const presentText = t('preview.present');
 
   return (
-    <div className="a4-page bg-white shadow-2xl print:shadow-none" style={{ fontSize: '12px' }}>
+    <div className="a4-page bg-white shadow-2xl print:shadow-none" style={{ fontSize: `${fontSize}px` }}>
       {/* Header - Two column layout matching content below */}
       <div className="bg-gray-100 py-3 px-8 print:bg-gray-100">
         <div className="flex flex-col md:flex-row gap-4 print:flex-row">
@@ -85,12 +86,12 @@ export function CVPreview() {
 
           {/* Right Column - Name and Title */}
           <div className="w-full md:w-2/3 print:w-2/3 flex flex-col justify-center items-center">
-            <h1 className="text-2xl tracking-[0.2em] uppercase mb-2">
+            <h1 className="em-text-2xl tracking-[0.2em] uppercase mb-2">
               <span className="font-bold">{firstName}</span>
               {lastName && <span className="font-light text-gray-600"> {lastName}</span>}
             </h1>
             {workExperience.length > 0 && workExperience[0].jobTitle && (
-              <p className="text-sm tracking-[0.2em] uppercase text-gray-500">
+              <p className="em-text-sm tracking-[0.2em] uppercase text-gray-500">
                 {workExperience[0].jobTitle}
               </p>
             )}
@@ -105,7 +106,7 @@ export function CVPreview() {
           {/* Contact Section */}
           <section className="mb-4">
             <LeftSectionHeading>{t('preview.contact')}</LeftSectionHeading>
-            <div className="space-y-1 text-sm text-gray-700">
+            <div className="space-y-1 em-text-sm text-gray-700">
               {personalInfo.location && (
                 <p>{personalInfo.location}</p>
               )}
@@ -152,7 +153,7 @@ export function CVPreview() {
           {!isEmpty(professionalSummary.summary) && (
             <section className="mb-4">
               <LeftSectionHeading>{t('preview.professionalSummary')}</LeftSectionHeading>
-              <p className="text-sm text-gray-700 leading-relaxed">{professionalSummary.summary}</p>
+              <p className="em-text-sm text-gray-700 leading-relaxed">{professionalSummary.summary}</p>
             </section>
           )}
 
@@ -165,7 +166,7 @@ export function CVPreview() {
                   <div key={lang.id}>
                     <div className="flex justify-between items-center mb-1">
                       <span className="font-medium text-gray-800">{lang.language}</span>
-                      <span className="text-sm text-gray-500">{t(`forms.languages.proficiencyLevelsShort.${lang.proficiency}`)}</span>
+                      <span className="em-text-sm text-gray-500">{t(`forms.languages.proficiencyLevelsShort.${lang.proficiency}`)}</span>
                     </div>
                     <SegmentedProgressBar level={getProficiencyLevel(lang.proficiency)} />
                   </div>
@@ -178,7 +179,7 @@ export function CVPreview() {
           {interests && interests.length > 0 && (
             <section className="mb-4">
               <LeftSectionHeading>{t('preview.interests')}</LeftSectionHeading>
-              <p className="text-sm text-gray-700">
+              <p className="em-text-sm text-gray-700">
                 {interests.map((interest) => interest.name).join(', ')}
               </p>
             </section>
@@ -195,21 +196,21 @@ export function CVPreview() {
                 {workExperience.map((exp) => (
                   <div key={exp.id}>
                     <div className="flex justify-between items-start mb-1">
-                      <h3 className="text-base font-semibold text-teal-700">{exp.jobTitle}</h3>
-                      <span className="text-sm text-gray-500 whitespace-nowrap ml-4">
+                      <h3 className="em-text-base font-semibold text-teal-700">{exp.jobTitle}</h3>
+                      <span className="em-text-sm text-gray-500 whitespace-nowrap ml-4">
                         {formatDateRange(exp.startDate, exp.endDate, exp.current, presentText)}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-500 italic mb-2">
+                    <p className="em-text-sm text-gray-500 italic mb-2">
                       {exp.company}, {exp.location}
                     </p>
                     {exp.description && (
-                      <p className="text-sm text-gray-700 mb-2">{exp.description}</p>
+                      <p className="em-text-sm text-gray-700 mb-2">{exp.description}</p>
                     )}
                     {exp.achievements.length > 0 && (
                       <ul className="list-disc list-outside ml-4 space-y-1">
                         {exp.achievements.map((achievement, idx) => (
-                          <li key={idx} className="text-sm text-gray-700">{achievement}</li>
+                          <li key={idx} className="em-text-sm text-gray-700">{achievement}</li>
                         ))}
                       </ul>
                     )}
@@ -228,14 +229,14 @@ export function CVPreview() {
                   <div key={edu.id}>
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="text-base font-semibold text-teal-700">{edu.degree}</h3>
-                        <p className="text-sm text-gray-500 italic">
+                        <h3 className="em-text-base font-semibold text-teal-700">{edu.degree}</h3>
+                        <p className="em-text-sm text-gray-500 italic">
                           {edu.institution}, {edu.location}
                         </p>
-                        {edu.gpa && <p className="text-sm text-gray-600">{t('preview.gpa')}: {edu.gpa}</p>}
-                        {edu.description && <p className="text-sm text-gray-700 mt-1">{edu.description}</p>}
+                        {edu.gpa && <p className="em-text-sm text-gray-600">{t('preview.gpa')}: {edu.gpa}</p>}
+                        {edu.description && <p className="em-text-sm text-gray-700 mt-1">{edu.description}</p>}
                       </div>
-                      <span className="text-sm text-gray-500 whitespace-nowrap ml-4">
+                      <span className="em-text-sm text-gray-500 whitespace-nowrap ml-4">
                         {formatDateRange(edu.startDate, edu.endDate, edu.current, presentText)}
                       </span>
                     </div>
@@ -255,7 +256,7 @@ export function CVPreview() {
                     {category.categoryName && (
                       <span className="font-semibold text-gray-800">{category.categoryName}: </span>
                     )}
-                    <span className="text-sm text-teal-700">
+                    <span className="em-text-sm text-teal-700">
                       {category.skills.join(', ')}
                     </span>
                   </div>
@@ -271,16 +272,16 @@ export function CVPreview() {
               <div className="space-y-4">
                 {projects.map((project) => (
                   <div key={project.id}>
-                    <h3 className="text-base font-semibold text-teal-700">{project.name}</h3>
+                    <h3 className="em-text-base font-semibold text-teal-700">{project.name}</h3>
                     {project.description && (
-                      <p className="text-sm text-gray-700 mb-2">{project.description}</p>
+                      <p className="em-text-sm text-gray-700 mb-2">{project.description}</p>
                     )}
                     {project.technologies.length > 0 && (
-                      <p className="text-sm text-gray-600 mb-2">
+                      <p className="em-text-sm text-gray-600 mb-2">
                         <span className="font-medium">Technologies:</span> {project.technologies.join(', ')}
                       </p>
                     )}
-                    <div className="flex gap-4 text-sm">
+                    <div className="flex gap-4 em-text-sm">
                       {project.url && (
                         <a
                           href={project.url}
@@ -305,7 +306,7 @@ export function CVPreview() {
                     {project.highlights.length > 0 && (
                       <ul className="list-disc list-outside ml-4 mt-2 space-y-1">
                         {project.highlights.map((highlight, idx) => (
-                          <li key={idx} className="text-sm text-gray-700">{highlight}</li>
+                          <li key={idx} className="em-text-sm text-gray-700">{highlight}</li>
                         ))}
                       </ul>
                     )}
@@ -323,13 +324,13 @@ export function CVPreview() {
                 {certifications.map((cert) => (
                   <div key={cert.id}>
                     <h3 className="font-semibold text-teal-700">{cert.name}</h3>
-                    <p className="text-sm text-gray-500 italic">{cert.issuer} • {cert.date}</p>
+                    <p className="em-text-sm text-gray-500 italic">{cert.issuer} • {cert.date}</p>
                     {cert.credentialUrl && (
                       <a
                         href={cert.credentialUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-teal-700 hover:underline"
+                        className="em-text-sm text-teal-700 hover:underline"
                       >
                         {t('preview.viewCredential')}
                       </a>
@@ -346,7 +347,7 @@ export function CVPreview() {
       {/* GDPR Clause Footer */}
       {gdprClause && !isEmpty(gdprClause.text) && (
         <footer className="px-8 py-2 border-t border-gray-300">
-          <p className="text-xs text-gray-500 leading-relaxed italic">
+          <p className="em-text-xs text-gray-500 leading-relaxed italic">
             {gdprClause.text}
           </p>
         </footer>

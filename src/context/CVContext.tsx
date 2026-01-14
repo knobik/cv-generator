@@ -14,6 +14,7 @@ import {
   Language,
   Interest,
   GDPRClause,
+  CVSettings,
 } from '@/types/cv';
 import { saveCVData, loadCVData } from '@/lib/storage';
 
@@ -43,6 +44,7 @@ interface CVContextType {
   updateInterest: (id: string, interest: Partial<Interest>) => void;
   removeInterest: (id: string) => void;
   updateGDPRClause: (gdprClause: Partial<GDPRClause>) => void;
+  updateSettings: (settings: Partial<CVSettings>) => void;
   updateLocale: (locale: string) => void;
   resetCV: () => void;
   loadCV: () => void;
@@ -361,6 +363,17 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     });
   }, [debouncedSave]);
 
+  const updateSettings = useCallback((settings: Partial<CVSettings>) => {
+    setCvData((prev) => {
+      const updated = {
+        ...prev,
+        settings: { ...(prev.settings || { fontSize: 16 }), ...settings },
+      };
+      debouncedSave(updated);
+      return updated;
+    });
+  }, [debouncedSave]);
+
   const updateLocale = useCallback((locale: string) => {
     setCvData((prev) => {
       const updated = {
@@ -417,6 +430,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     updateInterest,
     removeInterest,
     updateGDPRClause,
+    updateSettings,
     updateLocale,
     resetCV,
     loadCV,

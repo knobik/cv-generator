@@ -82,6 +82,10 @@ export interface Interest {
   name: string;
 }
 
+export interface CVSettings {
+  fontSize: number;
+}
+
 export interface CVData {
   personalInfo: PersonalInfo;
   professionalSummary: ProfessionalSummary;
@@ -93,6 +97,7 @@ export interface CVData {
   languages: Language[];
   interests: Interest[];
   gdprClause?: GDPRClause;
+  settings?: CVSettings;
   metadata: {
     lastUpdated: string;
     version: string;
@@ -119,6 +124,9 @@ export const EMPTY_CV_DATA: CVData = {
   interests: [],
   gdprClause: {
     text: '',
+  },
+  settings: {
+    fontSize: 16,
   },
   metadata: {
     lastUpdated: new Date().toISOString(),

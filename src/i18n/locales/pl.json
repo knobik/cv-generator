@@ -44,7 +44,8 @@
     "gpa": "Średnia ocen",
     "viewProject": "Zobacz projekt",
     "viewCredential": "Zobacz certyfikat",
-    "present": "Obecnie"
+    "present": "Obecnie",
+    "fontSize": "Rozmiar czcionki"
   },
   "forms": {
     "personalInfo": {
