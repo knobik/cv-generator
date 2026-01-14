@@ -26,17 +26,60 @@ body {
   }
 }
 
+/* A4 Page Preview Styles */
+.a4-page {
+  width: 210mm;
+  min-height: 297mm;
+  box-sizing: border-box;
+}
+
+.a4-preview-container {
+  background-color: #525659;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  overflow: auto;
+  min-height: 400px;
+}
+
+.a4-preview-wrapper {
+  transform-origin: top center;
+}
+
+@media screen {
+  .a4-preview-container {
+    /* Ensure scrolling works with scaled content */
+    align-items: flex-start;
+  }
+}
+
 /* Print-specific styles for PDF generation */
 @media print {
   @page {
     size: A4;
-    margin: 0.5cm;
+    margin: 0;
   }
 
   body {
     background: white;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
+  }
+
+  /* Reset A4 preview transforms for print */
+  .a4-preview-wrapper {
+    transform: none !important;
+  }
+
+  .a4-preview-container {
+    background: white !important;
+    padding: 0 !important;
+  }
+
+  .a4-page {
+    width: 100% !important;
+    min-height: auto !important;
+    box-shadow: none !important;
   }
 
   /* Hide the header and editor panel when printing from main page */

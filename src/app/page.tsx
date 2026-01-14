@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Header } from '@/components/layout/Header';
 import { PersonalInfoSection } from '@/components/cv-editor/PersonalInfoSection';
@@ -15,9 +15,29 @@ import { InterestsSection } from '@/components/cv-editor/InterestsSection';
 import { GDPRSection } from '@/components/cv-editor/GDPRSection';
 import { CVPreview } from '@/components/cv-preview/CVPreview';
 
+// A4 dimensions in pixels at 96 DPI
+const A4_WIDTH_PX = 794; // 210mm
+
 export default function HomePage() {
   const t = useTranslations();
   const [activeSection, setActiveSection] = useState('personal');
+  const previewContainerRef = useRef<HTMLDivElement>(null);
+  const [previewScale, setPreviewScale] = useState(0.5);
+
+  // Calculate scale to fit A4 page in container
+  useEffect(() => {
+    const calculateScale = () => {
+      if (previewContainerRef.current) {
+        const containerWidth = previewContainerRef.current.clientWidth - 40; // subtract padding
+        const scale = Math.min(containerWidth / A4_WIDTH_PX, 1);
+        setPreviewScale(scale);
+      }
+    };
+
+    calculateScale();
+    window.addEventListener('resize', calculateScale);
+    return () => window.removeEventListener('resize', calculateScale);
+  }, []);
 
   const sections = [
     { id: 'personal', labelKey: 'navigation.personalInfo', component: PersonalInfoSection },
@@ -77,8 +97,16 @@ export default function HomePage() {
                 {t('preview.previewDescription')}
               </p>
             </div>
-            <div className="overflow-auto max-h-[calc(100vh-200px)] print:overflow-visible print:max-h-none">
-              <CVPreview />
+            <div
+              ref={previewContainerRef}
+              className="a4-preview-container rounded-lg max-h-[calc(100vh-200px)] print:overflow-visible print:max-h-none print:bg-white print:p-0"
+            >
+              <div
+                className="a4-preview-wrapper"
+                style={{ transform: `scale(${previewScale})` }}
+              >
+                <CVPreview />
+              </div>
             </div>
           </div>
         </div>
