@@ -25,7 +25,8 @@
   "preview": {
     "livePreview": "Live Preview",
     "previewDescription": "See how your CV looks in real-time",
-    "professionalSummary": "Professional Summary",
+    "contact": "Contact",
+    "professionalSummary": "Summary",
     "workExperience": "Work Experience",
     "education": "Education",
     "skills": "Skills",
@@ -40,7 +41,8 @@
     "github": "GitHub",
     "gpa": "GPA",
     "viewProject": "View Project",
-    "viewCredential": "View Credential"
+    "viewCredential": "View Credential",
+    "present": "Present"
   },
   "forms": {
     "personalInfo": {

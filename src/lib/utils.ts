@@ -16,7 +16,7 @@ export function generateId(): string {
 }
 
 /**
- * Format date to MM/YYYY format
+ * Format date to YYYY.MM format
  */
 export function formatDate(date: string | null | undefined): string {
   if (!date) return '';
@@ -25,7 +25,7 @@ export function formatDate(date: string | null | undefined): string {
     const d = new Date(date);
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const year = d.getFullYear();
-    return `${month}/${year}`;
+    return `${year}.${month}`;
   } catch (error) {
     return '';
   }
@@ -37,11 +37,12 @@ export function formatDate(date: string | null | undefined): string {
 export function formatDateRange(
   startDate: string,
   endDate: string | null,
-  current: boolean
+  current: boolean,
+  presentText: string = 'Present'
 ): string {
   const start = formatDate(startDate);
   if (current || !endDate) {
-    return `${start} - Present`;
+    return `${start} - ${presentText}`;
   }
   const end = formatDate(endDate);
   return `${start} - ${end}`;

@@ -25,7 +25,8 @@
   "preview": {
     "livePreview": "Podgląd na żywo",
     "previewDescription": "Zobacz jak wygląda Twoje CV w czasie rzeczywistym",
-    "professionalSummary": "Podsumowanie zawodowe",
+    "contact": "Kontakt",
+    "professionalSummary": "Podsumowanie",
     "workExperience": "Doświadczenie zawodowe",
     "education": "Edukacja",
     "skills": "Umiejętności",
@@ -40,7 +41,8 @@
     "github": "GitHub",
     "gpa": "Średnia ocen",
     "viewProject": "Zobacz projekt",
-    "viewCredential": "Zobacz certyfikat"
+    "viewCredential": "Zobacz certyfikat",
+    "present": "Obecnie"
   },
   "forms": {
     "personalInfo": {
