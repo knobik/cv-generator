@@ -77,6 +77,11 @@ export interface GDPRClause {
   text: string;
 }
 
+export interface Interest {
+  id: string;
+  name: string;
+}
+
 export interface CVData {
   personalInfo: PersonalInfo;
   professionalSummary: ProfessionalSummary;
@@ -86,6 +91,7 @@ export interface CVData {
   projects: Project[];
   certifications: Certification[];
   languages: Language[];
+  interests: Interest[];
   gdprClause?: GDPRClause;
   metadata: {
     lastUpdated: string;
@@ -110,6 +116,7 @@ export const EMPTY_CV_DATA: CVData = {
   projects: [],
   certifications: [],
   languages: [],
+  interests: [],
   gdprClause: {
     text: '',
   },

@@ -57,7 +57,7 @@ function LeftSectionHeading({ children }: { children: React.ReactNode }) {
 export function CVPreview() {
   const t = useTranslations();
   const { cvData } = useCVData();
-  const { personalInfo, professionalSummary, workExperience, education, skills, projects, certifications, languages, gdprClause } = cvData;
+  const { personalInfo, professionalSummary, workExperience, education, skills, projects, certifications, languages, interests, gdprClause } = cvData;
 
   // Split name for styling (first name bold, rest regular)
   const nameParts = (personalInfo.fullName || 'Your Name').split(' ');
@@ -70,15 +70,15 @@ export function CVPreview() {
   return (
     <div className="bg-white shadow-lg rounded-lg max-w-4xl print:shadow-none print:rounded-none print:max-w-none">
       {/* Header - Two column layout matching content below */}
-      <div className="bg-gray-100 py-4 px-8 print:bg-gray-100">
-        <div className="flex flex-col md:flex-row gap-6 print:flex-row">
+      <div className="bg-gray-100 py-3 px-8 print:bg-gray-100">
+        <div className="flex flex-col md:flex-row gap-4 print:flex-row">
           {/* Left Column - Photo */}
           <div className="w-full md:w-1/3 print:w-1/3 flex justify-center items-center">
             {personalInfo.photo && (
               <img
                 src={personalInfo.photo}
                 alt={personalInfo.fullName}
-                className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
+                className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md"
               />
             )}
           </div>
@@ -165,12 +165,22 @@ export function CVPreview() {
                   <div key={lang.id}>
                     <div className="flex justify-between items-center mb-1">
                       <span className="font-medium text-gray-800">{lang.language}</span>
-                      <span className="text-sm text-gray-500">{lang.proficiency}</span>
+                      <span className="text-sm text-gray-500">{t(`forms.languages.proficiencyLevelsShort.${lang.proficiency}`)}</span>
                     </div>
                     <SegmentedProgressBar level={getProficiencyLevel(lang.proficiency)} />
                   </div>
                 ))}
               </div>
+            </section>
+          )}
+
+          {/* Interests */}
+          {interests && interests.length > 0 && (
+            <section className="mb-4">
+              <LeftSectionHeading>{t('preview.interests')}</LeftSectionHeading>
+              <p className="text-sm text-gray-700">
+                {interests.map((interest) => interest.name).join(', ')}
+              </p>
             </section>
           )}
         </div>

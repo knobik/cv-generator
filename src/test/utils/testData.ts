@@ -92,6 +92,7 @@ export const mockCVData: CVData = {
   projects: [mockProject],
   certifications: [mockCertification],
   languages: [mockLanguage],
+  interests: [],
   gdprClause: mockGDPRClause,
   metadata: {
     lastUpdated: '2026-01-11T00:00:00.000Z',

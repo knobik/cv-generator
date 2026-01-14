@@ -20,6 +20,7 @@
     "projects": "Projekty",
     "certifications": "Certyfikaty",
     "languages": "Języki",
+    "interests": "Zainteresowania",
     "gdpr": "Klauzula RODO"
   },
   "preview": {
@@ -33,6 +34,7 @@
     "projects": "Projekty",
     "certifications": "Certyfikaty",
     "languages": "Języki",
+    "interests": "Zainteresowania",
     "email": "Email",
     "phone": "Telefon",
     "location": "Lokalizacja",
@@ -131,7 +133,32 @@
       "noLanguages": "Nie dodano jeszcze języków. Kliknij \"Dodaj język\" aby rozpocząć.",
       "languageNumber": "Język #{number}",
       "language": "Język",
-      "proficiency": "Poziom biegłości"
+      "proficiency": "Poziom biegłości",
+      "proficiencyLevels": {
+        "Native": "Język ojczysty",
+        "C2": "C2 - Biegłość",
+        "C1": "C1 - Zaawansowany",
+        "B2": "B2 - Wyższy średniozaawansowany",
+        "B1": "B1 - Średniozaawansowany",
+        "A2": "A2 - Podstawowy",
+        "A1": "A1 - Początkujący"
+      },
+      "proficiencyLevelsShort": {
+        "Native": "Język ojczysty",
+        "C2": "C2",
+        "C1": "C1",
+        "B2": "B2",
+        "B1": "B1",
+        "A2": "A2",
+        "A1": "A1"
+      }
+    },
+    "interests": {
+      "title": "Zainteresowania",
+      "addInterest": "Dodaj zainteresowanie",
+      "noInterests": "Nie dodano jeszcze zainteresowań. Kliknij \"Dodaj zainteresowanie\" aby rozpocząć.",
+      "interestNumber": "Zainteresowanie #{number}",
+      "interest": "Zainteresowanie"
     },
     "gdpr": {
       "title": "Klauzula RODO",

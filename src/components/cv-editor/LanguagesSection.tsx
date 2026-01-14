@@ -11,16 +11,6 @@ import { Card } from '../ui/Card';
 
 const proficiencyLevels: ProficiencyLevel[] = ['Native', 'C2', 'C1', 'B2', 'B1', 'A2', 'A1'];
 
-const proficiencyLabels: Record<ProficiencyLevel, string> = {
-  'Native': 'Native',
-  'C2': 'C2 - Proficiency',
-  'C1': 'C1 - Advanced',
-  'B2': 'B2 - Upper Intermediate',
-  'B1': 'B1 - Intermediate',
-  'A2': 'A2 - Elementary',
-  'A1': 'A1 - Beginner',
-};
-
 export function LanguagesSection() {
   const t = useTranslations('forms.languages');
   const tCommon = useTranslations('common');
@@ -89,7 +79,7 @@ export function LanguagesSection() {
                   >
                     {proficiencyLevels.map((level) => (
                       <option key={level} value={level}>
-                        {proficiencyLabels[level]}
+                        {t(`proficiencyLevels.${level}`)}
                       </option>
                     ))}
                   </select>

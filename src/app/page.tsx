@@ -11,6 +11,7 @@ import { SkillsSection } from '@/components/cv-editor/SkillsSection';
 import { ProjectsSection } from '@/components/cv-editor/ProjectsSection';
 import { CertificationsSection } from '@/components/cv-editor/CertificationsSection';
 import { LanguagesSection } from '@/components/cv-editor/LanguagesSection';
+import { InterestsSection } from '@/components/cv-editor/InterestsSection';
 import { GDPRSection } from '@/components/cv-editor/GDPRSection';
 import { CVPreview } from '@/components/cv-preview/CVPreview';
 
@@ -27,6 +28,7 @@ export default function HomePage() {
     { id: 'projects', labelKey: 'navigation.projects', component: ProjectsSection },
     { id: 'certifications', labelKey: 'navigation.certifications', component: CertificationsSection },
     { id: 'languages', labelKey: 'navigation.languages', component: LanguagesSection },
+    { id: 'interests', labelKey: 'navigation.interests', component: InterestsSection },
     { id: 'gdpr', labelKey: 'navigation.gdpr', component: GDPRSection },
   ];
 

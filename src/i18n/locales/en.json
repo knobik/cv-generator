@@ -20,6 +20,7 @@
     "projects": "Projects",
     "certifications": "Certifications",
     "languages": "Languages",
+    "interests": "Interests",
     "gdpr": "GDPR Clause"
   },
   "preview": {
@@ -33,6 +34,7 @@
     "projects": "Projects",
     "certifications": "Certifications",
     "languages": "Languages",
+    "interests": "Interests",
     "email": "Email",
     "phone": "Phone",
     "location": "Location",
@@ -131,7 +133,32 @@
       "noLanguages": "No languages added yet. Click \"Add Language\" to get started.",
       "languageNumber": "Language #{number}",
       "language": "Language",
-      "proficiency": "Proficiency Level"
+      "proficiency": "Proficiency Level",
+      "proficiencyLevels": {
+        "Native": "Native",
+        "C2": "C2 - Proficiency",
+        "C1": "C1 - Advanced",
+        "B2": "B2 - Upper Intermediate",
+        "B1": "B1 - Intermediate",
+        "A2": "A2 - Elementary",
+        "A1": "A1 - Beginner"
+      },
+      "proficiencyLevelsShort": {
+        "Native": "Native",
+        "C2": "C2",
+        "C1": "C1",
+        "B2": "B2",
+        "B1": "B1",
+        "A2": "A2",
+        "A1": "A1"
+      }
+    },
+    "interests": {
+      "title": "Interests",
+      "addInterest": "Add Interest",
+      "noInterests": "No interests added yet. Click \"Add Interest\" to get started.",
+      "interestNumber": "Interest #{number}",
+      "interest": "Interest"
     },
     "gdpr": {
       "title": "GDPR Clause",

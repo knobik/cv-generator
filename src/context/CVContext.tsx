@@ -12,6 +12,7 @@ import {
   Project,
   Certification,
   Language,
+  Interest,
   GDPRClause,
 } from '@/types/cv';
 import { saveCVData, loadCVData } from '@/lib/storage';
@@ -38,6 +39,9 @@ interface CVContextType {
   addLanguage: (language: Language) => void;
   updateLanguage: (id: string, language: Partial<Language>) => void;
   removeLanguage: (id: string) => void;
+  addInterest: (interest: Interest) => void;
+  updateInterest: (id: string, interest: Partial<Interest>) => void;
+  removeInterest: (id: string) => void;
   updateGDPRClause: (gdprClause: Partial<GDPRClause>) => void;
   updateLocale: (locale: string) => void;
   resetCV: () => void;
@@ -311,6 +315,41 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     });
   }, [debouncedSave]);
 
+  const addInterest = useCallback((interest: Interest) => {
+    setCvData((prev) => {
+      const updated = {
+        ...prev,
+        interests: [...(prev.interests || []), interest],
+      };
+      debouncedSave(updated);
+      return updated;
+    });
+  }, [debouncedSave]);
+
+  const updateInterest = useCallback((id: string, interest: Partial<Interest>) => {
+    setCvData((prev) => {
+      const updated = {
+        ...prev,
+        interests: (prev.interests || []).map((int) =>
+          int.id === id ? { ...int, ...interest } : int
+        ),
+      };
+      debouncedSave(updated);
+      return updated;
+    });
+  }, [debouncedSave]);
+
+  const removeInterest = useCallback((id: string) => {
+    setCvData((prev) => {
+      const updated = {
+        ...prev,
+        interests: (prev.interests || []).filter((int) => int.id !== id),
+      };
+      debouncedSave(updated);
+      return updated;
+    });
+  }, [debouncedSave]);
+
   const updateGDPRClause = useCallback((gdprClause: Partial<GDPRClause>) => {
     setCvData((prev) => {
       const updated = {
@@ -374,6 +413,9 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     addLanguage,
     updateLanguage,
     removeLanguage,
+    addInterest,
+    updateInterest,
+    removeInterest,
     updateGDPRClause,
     updateLocale,
     resetCV,
