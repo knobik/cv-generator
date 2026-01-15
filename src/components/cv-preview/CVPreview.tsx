@@ -185,7 +185,7 @@ export function CVPreview() {
           {interests && interests.length > 0 && (
             <section className="mb-4">
               <LeftSectionHeading>{t('preview.interests')}</LeftSectionHeading>
-              <ul className="list-disc list-outside ml-4 em-text-sm text-gray-700 marker:text-teal-600">
+              <ul className="list-disc list-outside ml-4 space-y-1 em-text-sm text-gray-700 marker:text-teal-600">
                 {interests.map((interest) => (
                   <li key={interest.id}>{interest.name}</li>
                 ))}
