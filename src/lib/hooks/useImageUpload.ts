@@ -4,8 +4,9 @@ interface UseImageUploadReturn {
   preview: string | null;
   isUploading: boolean;
   error: string | null;
-  uploadImage: (file: File) => Promise<string | null>;
+  uploadImage: (source: File | string) => Promise<string | null>;
   clearImage: () => void;
+  setPreview: (preview: string | null) => void;
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -21,11 +22,9 @@ export function useImageUpload(): UseImageUploadReturn {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const compressImage = useCallback((file: File): Promise<string> => {
+  const compressImage = useCallback((source: File | string): Promise<string> => {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
+      const processImage = (imageDataUrl: string) => {
         const img = new Image();
 
         img.onload = () => {
@@ -74,35 +73,51 @@ export function useImageUpload(): UseImageUploadReturn {
           reject(new Error('Failed to load image'));
         };
 
-        img.src = e.target?.result as string;
+        img.src = imageDataUrl;
+      };
+
+      // Handle string (data URL) directly
+      if (typeof source === 'string') {
+        processImage(source);
+        return;
+      }
+
+      // Handle File object
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        processImage(e.target?.result as string);
       };
 
       reader.onerror = () => {
         reject(new Error('Failed to read file'));
       };
 
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(source);
     });
   }, []);
 
   const uploadImage = useCallback(
-    async (file: File): Promise<string | null> => {
+    async (source: File | string): Promise<string | null> => {
       setIsUploading(true);
       setError(null);
 
       try {
-        // Validate file type
-        if (!file.type.startsWith('image/')) {
-          throw new Error('File must be an image');
-        }
+        // Handle File input
+        if (source instanceof File) {
+          // Validate file type
+          if (!source.type.startsWith('image/')) {
+            throw new Error('File must be an image');
+          }
 
-        // Validate file size
-        if (file.size > MAX_FILE_SIZE) {
-          throw new Error('File size must be less than 5MB');
+          // Validate file size
+          if (source.size > MAX_FILE_SIZE) {
+            throw new Error('File size must be less than 5MB');
+          }
         }
 
         // Compress and convert to base64
-        const base64Image = await compressImage(file);
+        const base64Image = await compressImage(source);
 
         setPreview(base64Image);
         setIsUploading(false);
@@ -129,5 +144,6 @@ export function useImageUpload(): UseImageUploadReturn {
     error,
     uploadImage,
     clearImage,
+    setPreview,
   };
 }

@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { useImageUpload } from '@/lib/hooks/useImageUpload';
 import { Button } from '../ui/Button';
+import { ImageCropper } from './ImageCropper';
 
 interface ImageUploadProps {
   label?: string;
@@ -16,7 +17,10 @@ interface ImageUploadProps {
 export function ImageUpload({ label, value, onChange, error }: ImageUploadProps) {
   const t = useTranslations('forms.personalInfo');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { preview, isUploading, error: uploadError, uploadImage, clearImage } = useImageUpload();
+  const { preview, isUploading, error: uploadError, uploadImage, clearImage, setPreview } = useImageUpload();
+
+  const [showCropper, setShowCropper] = useState(false);
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
 
   const displayImage = preview || value;
   const displayError = error || uploadError;
@@ -25,13 +29,43 @@ export function ImageUpload({ label, value, onChange, error }: ImageUploadProps)
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const base64Image = await uploadImage(file);
-    if (base64Image) {
-      onChange(base64Image);
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      return;
     }
+
+    // Read the file and open cropper
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const imageDataUrl = event.target?.result as string;
+      setImageToCrop(imageDataUrl);
+      setShowCropper(true);
+    };
+    reader.readAsDataURL(file);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
+    }
+  };
+
+  const handleCropComplete = async (croppedImage: string) => {
+    // Process the cropped image through the upload hook for compression
+    const processedImage = await uploadImage(croppedImage);
+    if (processedImage) {
+      onChange(processedImage);
+    }
+    setImageToCrop(null);
+  };
+
+  const handleCropCancel = () => {
+    setShowCropper(false);
+    setImageToCrop(null);
+  };
+
+  const handleEditPhoto = () => {
+    if (displayImage) {
+      setImageToCrop(displayImage);
+      setShowCropper(true);
     }
   };
 
@@ -102,20 +136,38 @@ export function ImageUpload({ label, value, onChange, error }: ImageUploadProps)
           </div>
 
           {displayImage && (
-            <Button
-              type="button"
-              variant="danger"
-              size="sm"
-              onClick={handleRemove}
-              className="mt-2"
-            >
-              {t('removePhoto')}
-            </Button>
+            <div className="flex gap-2 mt-2">
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={handleEditPhoto}
+              >
+                {t('editPhoto')}
+              </Button>
+              <Button
+                type="button"
+                variant="danger"
+                size="sm"
+                onClick={handleRemove}
+              >
+                {t('removePhoto')}
+              </Button>
+            </div>
           )}
         </div>
       </div>
 
       {displayError && <p className="mt-2 text-sm text-red-600">{displayError}</p>}
+
+      {imageToCrop && (
+        <ImageCropper
+          image={imageToCrop}
+          isOpen={showCropper}
+          onClose={handleCropCancel}
+          onCropComplete={handleCropComplete}
+        />
+      )}
     </div>
   );
 }

@@ -61,7 +61,12 @@
       "uploadPrompt": "Kliknij aby przesłać lub przeciągnij i upuść",
       "uploadFormat": "PNG, JPG do 5MB",
       "uploading": "Przesyłanie...",
-      "removePhoto": "Usuń zdjęcie"
+      "removePhoto": "Usuń zdjęcie",
+      "editPhoto": "Edytuj zdjęcie",
+      "cropImage": "Przytnij zdjęcie",
+      "applyCrop": "Zastosuj",
+      "zoom": "Powiększenie",
+      "cropInstructions": "Przeciągnij aby zmienić pozycję, użyj suwaka aby powiększyć"
     },
     "summary": {
       "title": "Podsumowanie zawodowe"

@@ -61,7 +61,12 @@
       "uploadPrompt": "Click to upload or drag and drop",
       "uploadFormat": "PNG, JPG up to 5MB",
       "uploading": "Uploading...",
-      "removePhoto": "Remove Photo"
+      "removePhoto": "Remove Photo",
+      "editPhoto": "Edit Photo",
+      "cropImage": "Crop Image",
+      "applyCrop": "Apply",
+      "zoom": "Zoom",
+      "cropInstructions": "Drag to reposition, use slider to zoom"
     },
     "summary": {
       "title": "Professional Summary"
