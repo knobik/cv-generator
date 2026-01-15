@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useCVData } from '@/lib/hooks/useCVData';
+import { useDragReorder } from '@/lib/hooks/useDragReorder';
 import { Project } from '@/types/cv';
 import { generateId } from '@/lib/utils';
 import { FormInput } from '../form/FormInput';
@@ -13,8 +14,23 @@ import { Card } from '../ui/Card';
 export function ProjectsSection() {
   const t = useTranslations('forms.projects');
   const tCommon = useTranslations('common');
-  const { cvData, addProject, updateProject, removeProject } = useCVData();
+  const { cvData, addProject, updateProject, removeProject, reorderProjects } = useCVData();
   const { projects } = cvData;
+
+  const {
+    draggedIndex,
+    containerRef,
+    handleDragStart,
+    handleDragOver,
+    handleDrop,
+    handleDragEnd,
+    handleContainerDragLeave,
+    isDragging,
+    getPlaceholderPosition,
+  } = useDragReorder({
+    items: projects,
+    onReorder: reorderProjects,
+  });
 
   const handleAdd = () => {
     const newProject: Project = {
@@ -47,11 +63,43 @@ export function ProjectsSection() {
           {t('noProjects')}
         </p>
       ) : (
-        <div className="space-y-6">
-          {projects.map((project, index) => (
-            <div key={project.id} className="border border-gray-200 rounded-lg p-4">
+        <div
+          ref={containerRef as React.RefObject<HTMLDivElement>}
+          className="space-y-6"
+          onDragLeave={handleContainerDragLeave}
+        >
+          {projects.map((project, index) => {
+            const placeholderPos = getPlaceholderPosition(index);
+            const draggedItem = draggedIndex !== null ? projects[draggedIndex] : null;
+
+            return (
+              <React.Fragment key={project.id}>
+                {placeholderPos === 'before' && (
+                  <div
+                    className="border-2 border-dashed border-blue-400 rounded-lg p-4 bg-blue-50"
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleDrop(e, index)}
+                  >
+                    <div className="text-blue-400 font-medium">
+                      {draggedItem?.name || t('projectNumber', { number: draggedIndex! + 1 })}
+                    </div>
+                  </div>
+                )}
+                <div
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDrop={(e) => handleDrop(e, index)}
+                  onDragEnd={handleDragEnd}
+                  className={`border border-gray-200 rounded-lg p-4 bg-white cursor-grab active:cursor-grabbing ${
+                    isDragging(index) ? 'opacity-30' : ''
+                  }`}
+                >
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-medium text-gray-900">{t('projectNumber', { number: index + 1 })}</h3>
+                <h3 className="font-medium text-gray-900 flex items-center gap-2">
+                  <span className="text-gray-400 cursor-grab">⋮⋮</span>
+                  {t('projectNumber', { number: index + 1 })}
+                </h3>
                 <Button
                   variant="danger"
                   size="sm"
@@ -133,8 +181,21 @@ export function ProjectsSection() {
                   }
                 />
               </div>
-            </div>
-          ))}
+                </div>
+                {placeholderPos === 'after' && (
+                  <div
+                    className="border-2 border-dashed border-blue-400 rounded-lg p-4 bg-blue-50"
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleDrop(e, index)}
+                  >
+                    <div className="text-blue-400 font-medium">
+                      {draggedItem?.name || t('projectNumber', { number: draggedIndex! + 1 })}
+                    </div>
+                  </div>
+                )}
+              </React.Fragment>
+            );
+          })}
         </div>
       )}
     </Card>
@@ -151,6 +212,29 @@ function TechnologiesList({
   const t = useTranslations('forms.projects');
   const tCommon = useTranslations('common');
   const [newTech, setNewTech] = useState('');
+
+  const handleReorder = (fromIndex: number, toIndex: number) => {
+    const newTechnologies = [...technologies];
+    const [draggedTech] = newTechnologies.splice(fromIndex, 1);
+    newTechnologies.splice(toIndex, 0, draggedTech);
+    onChange(newTechnologies);
+  };
+
+  const {
+    containerRef,
+    handleDragStart,
+    handleDragOver,
+    handleDrop,
+    handleDragEnd,
+    handleContainerDragLeave,
+    isDragging,
+    getPlaceholderPosition,
+    getDraggedItem,
+  } = useDragReorder({
+    items: technologies,
+    onReorder: handleReorder,
+    autoScroll: false,
+  });
 
   const handleAdd = () => {
     if (newTech.trim()) {
@@ -170,22 +254,57 @@ function TechnologiesList({
       </label>
 
       {technologies.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-3">
-          {technologies.map((tech, index) => (
-            <span
-              key={index}
-              className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
-            >
-              {tech}
-              <button
-                type="button"
-                onClick={() => handleRemove(index)}
-                className="text-blue-700 hover:text-blue-900 font-bold"
-              >
-                ×
-              </button>
-            </span>
-          ))}
+        <div
+          ref={containerRef as React.RefObject<HTMLDivElement>}
+          className="flex flex-wrap gap-2 mb-3"
+          onDragLeave={handleContainerDragLeave}
+        >
+          {technologies.map((tech, index) => {
+            const placeholderPos = getPlaceholderPosition(index);
+            const draggedItem = getDraggedItem();
+
+            return (
+              <React.Fragment key={index}>
+                {placeholderPos === 'before' && (
+                  <span
+                    className="inline-flex items-center px-3 py-1 border-2 border-dashed border-blue-400 rounded-full text-sm text-blue-400 bg-blue-50"
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleDrop(e, index)}
+                  >
+                    {draggedItem}
+                  </span>
+                )}
+                <span
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDrop={(e) => handleDrop(e, index)}
+                  onDragEnd={handleDragEnd}
+                  className={`inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm cursor-grab active:cursor-grabbing select-none ${
+                    isDragging(index) ? 'opacity-30' : ''
+                  }`}
+                >
+                  {tech}
+                  <button
+                    type="button"
+                    onClick={() => handleRemove(index)}
+                    className="text-blue-700 hover:text-blue-900 font-bold"
+                  >
+                    ×
+                  </button>
+                </span>
+                {placeholderPos === 'after' && (
+                  <span
+                    className="inline-flex items-center px-3 py-1 border-2 border-dashed border-blue-400 rounded-full text-sm text-blue-400 bg-blue-50"
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleDrop(e, index)}
+                  >
+                    {draggedItem}
+                  </span>
+                )}
+              </React.Fragment>
+            );
+          })}
         </div>
       )}
 
@@ -217,6 +336,28 @@ function HighlightsList({
   const tCommon = useTranslations('common');
   const [newHighlight, setNewHighlight] = useState('');
 
+  const handleReorder = (fromIndex: number, toIndex: number) => {
+    const newHighlights = [...highlights];
+    const [draggedHighlight] = newHighlights.splice(fromIndex, 1);
+    newHighlights.splice(toIndex, 0, draggedHighlight);
+    onChange(newHighlights);
+  };
+
+  const {
+    containerRef,
+    handleDragStart,
+    handleDragOver,
+    handleDrop,
+    handleDragEnd,
+    handleContainerDragLeave,
+    isDragging,
+    getPlaceholderPosition,
+    getDraggedItem,
+  } = useDragReorder({
+    items: highlights,
+    onReorder: handleReorder,
+  });
+
   const handleAdd = () => {
     if (newHighlight.trim()) {
       onChange([...highlights, newHighlight.trim()]);
@@ -228,6 +369,12 @@ function HighlightsList({
     onChange(highlights.filter((_, i) => i !== index));
   };
 
+  const handleUpdate = (index: number, value: string) => {
+    const updatedHighlights = [...highlights];
+    updatedHighlights[index] = value;
+    onChange(updatedHighlights);
+  };
+
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -235,22 +382,67 @@ function HighlightsList({
       </label>
 
       {highlights.length > 0 && (
-        <ul className="space-y-2 mb-3">
-          {highlights.map((highlight, index) => (
-            <li
-              key={index}
-              className="flex items-start gap-2 p-2 bg-gray-50 rounded border border-gray-200"
-            >
-              <span className="flex-1 text-sm">{highlight}</span>
-              <button
-                type="button"
-                onClick={() => handleRemove(index)}
-                className="text-red-600 hover:text-red-800 text-sm"
-              >
-                {tCommon('remove')}
-              </button>
-            </li>
-          ))}
+        <ul
+          ref={containerRef as React.RefObject<HTMLUListElement>}
+          className="space-y-2 mb-3"
+          onDragLeave={handleContainerDragLeave}
+        >
+          {highlights.map((highlight, index) => {
+            const placeholderPos = getPlaceholderPosition(index);
+            const draggedItem = getDraggedItem();
+
+            return (
+              <React.Fragment key={index}>
+                {placeholderPos === 'before' && (
+                  <li
+                    className="flex items-center gap-2 px-3 py-2 border-2 border-dashed border-blue-400 rounded-md bg-blue-50"
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleDrop(e, index)}
+                  >
+                    <span className="text-blue-400 text-sm truncate">
+                      {draggedItem}
+                    </span>
+                  </li>
+                )}
+                <li
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDrop={(e) => handleDrop(e, index)}
+                  onDragEnd={handleDragEnd}
+                  className={`flex items-center gap-2 cursor-grab active:cursor-grabbing ${
+                    isDragging(index) ? 'opacity-30' : ''
+                  }`}
+                >
+                  <span className="text-gray-400 cursor-grab select-none">⋮⋮</span>
+                  <input
+                    type="text"
+                    value={highlight}
+                    onChange={(e) => handleUpdate(index, e.target.value)}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemove(index)}
+                    className="text-red-600 hover:text-red-800 text-sm px-2 py-2"
+                  >
+                    {tCommon('remove')}
+                  </button>
+                </li>
+                {placeholderPos === 'after' && (
+                  <li
+                    className="flex items-center gap-2 px-3 py-2 border-2 border-dashed border-blue-400 rounded-md bg-blue-50"
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleDrop(e, index)}
+                  >
+                    <span className="text-blue-400 text-sm truncate">
+                      {draggedItem}
+                    </span>
+                  </li>
+                )}
+              </React.Fragment>
+            );
+          })}
         </ul>
       )}
 

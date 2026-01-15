@@ -29,6 +29,7 @@ interface CVContextType {
   addEducation: (education: Education) => void;
   updateEducation: (id: string, education: Partial<Education>) => void;
   removeEducation: (id: string) => void;
+  reorderEducation: (fromIndex: number, toIndex: number) => void;
   addSkillCategory: (category: SkillCategory) => void;
   updateSkillCategory: (id: string, category: Partial<SkillCategory>) => void;
   removeSkillCategory: (id: string) => void;
@@ -36,6 +37,7 @@ interface CVContextType {
   addProject: (project: Project) => void;
   updateProject: (id: string, project: Partial<Project>) => void;
   removeProject: (id: string) => void;
+  reorderProjects: (fromIndex: number, toIndex: number) => void;
   addCertification: (certification: Certification) => void;
   updateCertification: (id: string, certification: Partial<Certification>) => void;
   removeCertification: (id: string) => void;
@@ -193,6 +195,20 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     });
   }, [debouncedSave]);
 
+  const reorderEducation = useCallback((fromIndex: number, toIndex: number) => {
+    setCvData((prev) => {
+      const newEducation = [...prev.education];
+      const [movedEducation] = newEducation.splice(fromIndex, 1);
+      newEducation.splice(toIndex, 0, movedEducation);
+      const updated = {
+        ...prev,
+        education: newEducation,
+      };
+      debouncedSave(updated);
+      return updated;
+    });
+  }, [debouncedSave]);
+
   const addSkillCategory = useCallback((category: SkillCategory) => {
     setCvData((prev) => {
       const updated = {
@@ -271,6 +287,20 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
       const updated = {
         ...prev,
         projects: prev.projects.filter((proj) => proj.id !== id),
+      };
+      debouncedSave(updated);
+      return updated;
+    });
+  }, [debouncedSave]);
+
+  const reorderProjects = useCallback((fromIndex: number, toIndex: number) => {
+    setCvData((prev) => {
+      const newProjects = [...prev.projects];
+      const [movedProject] = newProjects.splice(fromIndex, 1);
+      newProjects.splice(toIndex, 0, movedProject);
+      const updated = {
+        ...prev,
+        projects: newProjects,
       };
       debouncedSave(updated);
       return updated;
@@ -445,6 +475,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     addEducation,
     updateEducation,
     removeEducation,
+    reorderEducation,
     addSkillCategory,
     updateSkillCategory,
     removeSkillCategory,
@@ -452,6 +483,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     addProject,
     updateProject,
     removeProject,
+    reorderProjects,
     addCertification,
     updateCertification,
     removeCertification,

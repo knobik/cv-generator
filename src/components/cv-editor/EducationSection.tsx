@@ -3,6 +3,7 @@
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import { useCVData } from '@/lib/hooks/useCVData';
+import { useDragReorder } from '@/lib/hooks/useDragReorder';
 import { Education } from '@/types/cv';
 import { generateId } from '@/lib/utils';
 import { FormInput } from '../form/FormInput';
@@ -13,8 +14,23 @@ import { Card } from '../ui/Card';
 
 export function EducationSection() {
   const t = useTranslations();
-  const { cvData, addEducation, updateEducation, removeEducation } = useCVData();
+  const { cvData, addEducation, updateEducation, removeEducation, reorderEducation } = useCVData();
   const { education } = cvData;
+
+  const {
+    draggedIndex,
+    containerRef,
+    handleDragStart,
+    handleDragOver,
+    handleDrop,
+    handleDragEnd,
+    handleContainerDragLeave,
+    isDragging,
+    getPlaceholderPosition,
+  } = useDragReorder({
+    items: education,
+    onReorder: reorderEducation,
+  });
 
   const handleAdd = () => {
     const newEducation: Education = {
@@ -47,11 +63,43 @@ export function EducationSection() {
           {t('forms.education.noEducation')}
         </p>
       ) : (
-        <div className="space-y-6">
-          {education.map((edu, index) => (
-            <div key={edu.id} className="border border-gray-200 rounded-lg p-4">
+        <div
+          ref={containerRef as React.RefObject<HTMLDivElement>}
+          className="space-y-6"
+          onDragLeave={handleContainerDragLeave}
+        >
+          {education.map((edu, index) => {
+            const placeholderPos = getPlaceholderPosition(index);
+            const draggedItem = draggedIndex !== null ? education[draggedIndex] : null;
+
+            return (
+              <React.Fragment key={edu.id}>
+                {placeholderPos === 'before' && (
+                  <div
+                    className="border-2 border-dashed border-blue-400 rounded-lg p-4 bg-blue-50"
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleDrop(e, index)}
+                  >
+                    <div className="text-blue-400 font-medium">
+                      {draggedItem?.degree || draggedItem?.institution || t('forms.education.educationNumber', { number: draggedIndex! + 1 })}
+                    </div>
+                  </div>
+                )}
+                <div
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDrop={(e) => handleDrop(e, index)}
+                  onDragEnd={handleDragEnd}
+                  className={`border border-gray-200 rounded-lg p-4 bg-white cursor-grab active:cursor-grabbing ${
+                    isDragging(index) ? 'opacity-30' : ''
+                  }`}
+                >
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-medium text-gray-900">{t('forms.education.educationNumber', { number: index + 1 })}</h3>
+                <h3 className="font-medium text-gray-900 flex items-center gap-2">
+                  <span className="text-gray-400 cursor-grab">⋮⋮</span>
+                  {t('forms.education.educationNumber', { number: index + 1 })}
+                </h3>
                 <Button
                   variant="danger"
                   size="sm"
@@ -143,8 +191,21 @@ export function EducationSection() {
                   rows={3}
                 />
               </div>
-            </div>
-          ))}
+                </div>
+                {placeholderPos === 'after' && (
+                  <div
+                    className="border-2 border-dashed border-blue-400 rounded-lg p-4 bg-blue-50"
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleDrop(e, index)}
+                  >
+                    <div className="text-blue-400 font-medium">
+                      {draggedItem?.degree || draggedItem?.institution || t('forms.education.educationNumber', { number: draggedIndex! + 1 })}
+                    </div>
+                  </div>
+                )}
+              </React.Fragment>
+            );
+          })}
         </div>
       )}
     </Card>
