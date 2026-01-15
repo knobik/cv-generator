@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useCVData } from '@/lib/hooks/useCVData';
+import { useDragReorder } from '@/lib/hooks/useDragReorder';
 import { SkillCategory } from '@/types/cv';
 import { generateId } from '@/lib/utils';
 import { FormInput } from '../form/FormInput';
@@ -15,47 +16,20 @@ export function SkillsSection() {
   const { cvData, addSkillCategory, updateSkillCategory, removeSkillCategory, reorderSkillCategories } = useCVData();
   const { skills } = cvData;
 
-  const [draggedCategoryIndex, setDraggedCategoryIndex] = useState<number | null>(null);
-  const [dragOverCategoryIndex, setDragOverCategoryIndex] = useState<number | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const scrollAnimationRef = useRef<number | null>(null);
-  const mouseYRef = useRef<number>(0);
-
-  const SCROLL_ZONE_HEIGHT = 150;
-  const MAX_SCROLL_SPEED = 25;
-
-  const scrollLoop = useCallback(() => {
-    const clientY = mouseYRef.current;
-    const scrollZoneTop = SCROLL_ZONE_HEIGHT;
-    const scrollZoneBottom = window.innerHeight - SCROLL_ZONE_HEIGHT;
-
-    if (clientY < scrollZoneTop) {
-      const intensity = (scrollZoneTop - clientY) / SCROLL_ZONE_HEIGHT;
-      window.scrollBy({ top: -MAX_SCROLL_SPEED * intensity, behavior: 'instant' });
-    } else if (clientY > scrollZoneBottom) {
-      const intensity = (clientY - scrollZoneBottom) / SCROLL_ZONE_HEIGHT;
-      window.scrollBy({ top: MAX_SCROLL_SPEED * intensity, behavior: 'instant' });
-    }
-
-    scrollAnimationRef.current = requestAnimationFrame(scrollLoop);
-  }, []);
-
-  const startAutoScroll = useCallback(() => {
-    if (!scrollAnimationRef.current) {
-      scrollAnimationRef.current = requestAnimationFrame(scrollLoop);
-    }
-  }, [scrollLoop]);
-
-  const stopAutoScroll = useCallback(() => {
-    if (scrollAnimationRef.current) {
-      cancelAnimationFrame(scrollAnimationRef.current);
-      scrollAnimationRef.current = null;
-    }
-  }, []);
-
-  useEffect(() => {
-    return () => stopAutoScroll();
-  }, [stopAutoScroll]);
+  const {
+    draggedIndex,
+    containerRef,
+    handleDragStart,
+    handleDragOver,
+    handleDrop,
+    handleDragEnd,
+    handleContainerDragLeave,
+    isDragging,
+    getPlaceholderPosition,
+  } = useDragReorder({
+    items: skills,
+    onReorder: reorderSkillCategories,
+  });
 
   const handleAdd = () => {
     const newCategory: SkillCategory = {
@@ -64,57 +38,6 @@ export function SkillsSection() {
       skills: [],
     };
     addSkillCategory(newCategory);
-  };
-
-  const handleCategoryDragStart = (e: React.DragEvent, index: number) => {
-    setDraggedCategoryIndex(index);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', 'category');
-    mouseYRef.current = e.clientY;
-    startAutoScroll();
-  };
-
-  const handleCategoryDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    if (dragOverCategoryIndex !== index) {
-      setDragOverCategoryIndex(index);
-    }
-    mouseYRef.current = e.clientY;
-  };
-
-  const handleContainerDragLeave = (e: React.DragEvent) => {
-    if (containerRef.current && !containerRef.current.contains(e.relatedTarget as Node)) {
-      setDragOverCategoryIndex(null);
-    }
-  };
-
-  const handleCategoryDrop = (e: React.DragEvent, dropIndex: number) => {
-    e.preventDefault();
-    stopAutoScroll();
-    if (draggedCategoryIndex === null || draggedCategoryIndex === dropIndex) {
-      setDraggedCategoryIndex(null);
-      setDragOverCategoryIndex(null);
-      return;
-    }
-
-    reorderSkillCategories(draggedCategoryIndex, dropIndex);
-    setDraggedCategoryIndex(null);
-    setDragOverCategoryIndex(null);
-  };
-
-  const handleCategoryDragEnd = () => {
-    stopAutoScroll();
-    setDraggedCategoryIndex(null);
-    setDragOverCategoryIndex(null);
-  };
-
-  const getCategoryPlaceholderPosition = (index: number): 'before' | 'after' | null => {
-    if (draggedCategoryIndex === null || dragOverCategoryIndex === null) return null;
-    if (dragOverCategoryIndex !== index) return null;
-    if (draggedCategoryIndex === index) return null;
-
-    return draggedCategoryIndex > index ? 'before' : 'after';
   };
 
   return (
@@ -134,35 +57,35 @@ export function SkillsSection() {
         </p>
       ) : (
         <div
-          ref={containerRef}
+          ref={containerRef as React.RefObject<HTMLDivElement>}
           className="space-y-4"
           onDragLeave={handleContainerDragLeave}
         >
           {skills.map((category, index) => {
-            const placeholderPos = getCategoryPlaceholderPosition(index);
-            const isDragging = draggedCategoryIndex === index;
+            const placeholderPos = getPlaceholderPosition(index);
+            const draggedCategory = draggedIndex !== null ? skills[draggedIndex] : null;
 
             return (
               <React.Fragment key={category.id}>
                 {placeholderPos === 'before' && (
                   <div
                     className="border-2 border-dashed border-blue-400 rounded-lg p-4 bg-blue-50"
-                    onDragOver={(e) => handleCategoryDragOver(e, index)}
-                    onDrop={(e) => handleCategoryDrop(e, index)}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleDrop(e, index)}
                   >
                     <div className="text-blue-400 font-medium">
-                      {skills[draggedCategoryIndex!]?.categoryName || t('categoryNumber', { number: draggedCategoryIndex! + 1 })}
+                      {draggedCategory?.categoryName || t('categoryNumber', { number: draggedIndex! + 1 })}
                     </div>
                   </div>
                 )}
                 <div
                   draggable
-                  onDragStart={(e) => handleCategoryDragStart(e, index)}
-                  onDragOver={(e) => handleCategoryDragOver(e, index)}
-                  onDrop={(e) => handleCategoryDrop(e, index)}
-                  onDragEnd={handleCategoryDragEnd}
+                  onDragStart={(e) => handleDragStart(e, index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDrop={(e) => handleDrop(e, index)}
+                  onDragEnd={handleDragEnd}
                   className={`border border-gray-200 rounded-lg p-4 bg-white cursor-grab active:cursor-grabbing ${
-                    isDragging ? 'opacity-30' : ''
+                    isDragging(index) ? 'opacity-30' : ''
                   }`}
                 >
                   <div className="flex items-center justify-between mb-4">
@@ -200,11 +123,11 @@ export function SkillsSection() {
                 {placeholderPos === 'after' && (
                   <div
                     className="border-2 border-dashed border-blue-400 rounded-lg p-4 bg-blue-50"
-                    onDragOver={(e) => handleCategoryDragOver(e, index)}
-                    onDrop={(e) => handleCategoryDrop(e, index)}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleDrop(e, index)}
                   >
                     <div className="text-blue-400 font-medium">
-                      {skills[draggedCategoryIndex!]?.categoryName || t('categoryNumber', { number: draggedCategoryIndex! + 1 })}
+                      {draggedCategory?.categoryName || t('categoryNumber', { number: draggedIndex! + 1 })}
                     </div>
                   </div>
                 )}
@@ -227,9 +150,29 @@ function SkillsList({
   const t = useTranslations('forms.skills');
   const tCommon = useTranslations('common');
   const [newSkill, setNewSkill] = useState('');
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const handleReorder = (fromIndex: number, toIndex: number) => {
+    const newSkills = [...skills];
+    const [draggedSkill] = newSkills.splice(fromIndex, 1);
+    newSkills.splice(toIndex, 0, draggedSkill);
+    onChange(newSkills);
+  };
+
+  const {
+    containerRef,
+    handleDragStart,
+    handleDragOver,
+    handleDrop,
+    handleDragEnd,
+    handleContainerDragLeave,
+    isDragging,
+    getPlaceholderPosition,
+    getDraggedItem,
+  } = useDragReorder({
+    items: skills,
+    onReorder: handleReorder,
+    autoScroll: false, // Skills are inline, no need for page scroll
+  });
 
   const handleAdd = () => {
     if (newSkill.trim()) {
@@ -242,66 +185,6 @@ function SkillsList({
     onChange(skills.filter((_, i) => i !== index));
   };
 
-  const handleDragStart = (e: React.DragEvent, index: number) => {
-    e.stopPropagation();
-    setDraggedIndex(index);
-    e.dataTransfer.effectAllowed = 'move';
-    // Set drag image to be slightly transparent
-    if (e.currentTarget instanceof HTMLElement) {
-      e.dataTransfer.setDragImage(e.currentTarget, 0, 0);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.dataTransfer.dropEffect = 'move';
-    if (dragOverIndex !== index) {
-      setDragOverIndex(index);
-    }
-  };
-
-  const handleContainerDragLeave = (e: React.DragEvent) => {
-    // Only clear if we're leaving the container entirely
-    if (containerRef.current && !containerRef.current.contains(e.relatedTarget as Node)) {
-      setDragOverIndex(null);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (draggedIndex === null || draggedIndex === dropIndex) {
-      setDraggedIndex(null);
-      setDragOverIndex(null);
-      return;
-    }
-
-    const newSkills = [...skills];
-    const [draggedSkill] = newSkills.splice(draggedIndex, 1);
-    const adjustedDropIndex = draggedIndex < dropIndex ? dropIndex : dropIndex;
-    newSkills.splice(adjustedDropIndex, 0, draggedSkill);
-    onChange(newSkills);
-
-    setDraggedIndex(null);
-    setDragOverIndex(null);
-  };
-
-  const handleDragEnd = (e: React.DragEvent) => {
-    e.stopPropagation();
-    setDraggedIndex(null);
-    setDragOverIndex(null);
-  };
-
-  // Calculate where to show the placeholder
-  const getPlaceholderPosition = (index: number): 'before' | 'after' | null => {
-    if (draggedIndex === null || dragOverIndex === null) return null;
-    if (dragOverIndex !== index) return null;
-    if (draggedIndex === index) return null;
-
-    return draggedIndex > index ? 'before' : 'after';
-  };
-
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -310,13 +193,13 @@ function SkillsList({
 
       {skills.length > 0 && (
         <div
-          ref={containerRef}
+          ref={containerRef as React.RefObject<HTMLDivElement>}
           className="flex flex-wrap gap-2 mb-3"
           onDragLeave={handleContainerDragLeave}
         >
           {skills.map((skill, index) => {
             const placeholderPos = getPlaceholderPosition(index);
-            const isDragging = draggedIndex === index;
+            const draggedItem = getDraggedItem();
 
             return (
               <React.Fragment key={index}>
@@ -326,7 +209,7 @@ function SkillsList({
                     onDragOver={(e) => handleDragOver(e, index)}
                     onDrop={(e) => handleDrop(e, index)}
                   >
-                    {skills[draggedIndex!]}
+                    {draggedItem}
                   </span>
                 )}
                 <span
@@ -336,7 +219,7 @@ function SkillsList({
                   onDrop={(e) => handleDrop(e, index)}
                   onDragEnd={handleDragEnd}
                   className={`inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm cursor-grab active:cursor-grabbing select-none ${
-                    isDragging ? 'opacity-30' : ''
+                    isDragging(index) ? 'opacity-30' : ''
                   }`}
                 >
                   {skill}
@@ -355,7 +238,7 @@ function SkillsList({
                     onDragOver={(e) => handleDragOver(e, index)}
                     onDrop={(e) => handleDrop(e, index)}
                   >
-                    {skills[draggedIndex!]}
+                    {draggedItem}
                   </span>
                 )}
               </React.Fragment>

@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useCVData } from '@/lib/hooks/useCVData';
+import { useDragReorder } from '@/lib/hooks/useDragReorder';
 import { WorkExperience } from '@/types/cv';
 import { generateId } from '@/lib/utils';
 import { FormInput } from '../form/FormInput';
@@ -16,47 +17,20 @@ export function WorkExperienceSection() {
   const { cvData, addWorkExperience, updateWorkExperience, removeWorkExperience, reorderWorkExperience } = useCVData();
   const { workExperience } = cvData;
 
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const scrollAnimationRef = useRef<number | null>(null);
-  const mouseYRef = useRef<number>(0);
-
-  const SCROLL_ZONE_HEIGHT = 150;
-  const MAX_SCROLL_SPEED = 25;
-
-  const scrollLoop = useCallback(() => {
-    const clientY = mouseYRef.current;
-    const scrollZoneTop = SCROLL_ZONE_HEIGHT;
-    const scrollZoneBottom = window.innerHeight - SCROLL_ZONE_HEIGHT;
-
-    if (clientY < scrollZoneTop) {
-      const intensity = (scrollZoneTop - clientY) / SCROLL_ZONE_HEIGHT;
-      window.scrollBy({ top: -MAX_SCROLL_SPEED * intensity, behavior: 'instant' });
-    } else if (clientY > scrollZoneBottom) {
-      const intensity = (clientY - scrollZoneBottom) / SCROLL_ZONE_HEIGHT;
-      window.scrollBy({ top: MAX_SCROLL_SPEED * intensity, behavior: 'instant' });
-    }
-
-    scrollAnimationRef.current = requestAnimationFrame(scrollLoop);
-  }, []);
-
-  const startAutoScroll = useCallback(() => {
-    if (!scrollAnimationRef.current) {
-      scrollAnimationRef.current = requestAnimationFrame(scrollLoop);
-    }
-  }, [scrollLoop]);
-
-  const stopAutoScroll = useCallback(() => {
-    if (scrollAnimationRef.current) {
-      cancelAnimationFrame(scrollAnimationRef.current);
-      scrollAnimationRef.current = null;
-    }
-  }, []);
-
-  useEffect(() => {
-    return () => stopAutoScroll();
-  }, [stopAutoScroll]);
+  const {
+    draggedIndex,
+    containerRef,
+    handleDragStart,
+    handleDragOver,
+    handleDrop,
+    handleDragEnd,
+    handleContainerDragLeave,
+    isDragging,
+    getPlaceholderPosition,
+  } = useDragReorder({
+    items: workExperience,
+    onReorder: reorderWorkExperience,
+  });
 
   const handleAdd = () => {
     const newExperience: WorkExperience = {
@@ -71,57 +45,6 @@ export function WorkExperienceSection() {
       achievements: [],
     };
     addWorkExperience(newExperience);
-  };
-
-  const handleDragStart = (e: React.DragEvent, index: number) => {
-    setDraggedIndex(index);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', 'experience');
-    mouseYRef.current = e.clientY;
-    startAutoScroll();
-  };
-
-  const handleDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    if (dragOverIndex !== index) {
-      setDragOverIndex(index);
-    }
-    mouseYRef.current = e.clientY;
-  };
-
-  const handleContainerDragLeave = (e: React.DragEvent) => {
-    if (containerRef.current && !containerRef.current.contains(e.relatedTarget as Node)) {
-      setDragOverIndex(null);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
-    e.preventDefault();
-    stopAutoScroll();
-    if (draggedIndex === null || draggedIndex === dropIndex) {
-      setDraggedIndex(null);
-      setDragOverIndex(null);
-      return;
-    }
-
-    reorderWorkExperience(draggedIndex, dropIndex);
-    setDraggedIndex(null);
-    setDragOverIndex(null);
-  };
-
-  const handleDragEnd = () => {
-    stopAutoScroll();
-    setDraggedIndex(null);
-    setDragOverIndex(null);
-  };
-
-  const getPlaceholderPosition = (index: number): 'before' | 'after' | null => {
-    if (draggedIndex === null || dragOverIndex === null) return null;
-    if (dragOverIndex !== index) return null;
-    if (draggedIndex === index) return null;
-
-    return draggedIndex > index ? 'before' : 'after';
   };
 
   return (
@@ -141,13 +64,13 @@ export function WorkExperienceSection() {
         </p>
       ) : (
         <div
-          ref={containerRef}
+          ref={containerRef as React.RefObject<HTMLDivElement>}
           className="space-y-6"
           onDragLeave={handleContainerDragLeave}
         >
           {workExperience.map((exp, index) => {
             const placeholderPos = getPlaceholderPosition(index);
-            const isDragging = draggedIndex === index;
+            const draggedItem = draggedIndex !== null ? workExperience[draggedIndex] : null;
 
             return (
               <React.Fragment key={exp.id}>
@@ -158,7 +81,7 @@ export function WorkExperienceSection() {
                     onDrop={(e) => handleDrop(e, index)}
                   >
                     <div className="text-blue-400 font-medium">
-                      {workExperience[draggedIndex!]?.jobTitle || workExperience[draggedIndex!]?.company || t('forms.experience.experienceNumber', { number: draggedIndex! + 1 })}
+                      {draggedItem?.jobTitle || draggedItem?.company || t('forms.experience.experienceNumber', { number: draggedIndex! + 1 })}
                     </div>
                   </div>
                 )}
@@ -169,7 +92,7 @@ export function WorkExperienceSection() {
                   onDrop={(e) => handleDrop(e, index)}
                   onDragEnd={handleDragEnd}
                   className={`border border-gray-200 rounded-lg p-4 bg-white cursor-grab active:cursor-grabbing ${
-                    isDragging ? 'opacity-30' : ''
+                    isDragging(index) ? 'opacity-30' : ''
                   }`}
                 >
                   <div className="flex items-center justify-between mb-4">
@@ -274,7 +197,7 @@ export function WorkExperienceSection() {
                     onDrop={(e) => handleDrop(e, index)}
                   >
                     <div className="text-blue-400 font-medium">
-                      {workExperience[draggedIndex!]?.jobTitle || workExperience[draggedIndex!]?.company || t('forms.experience.experienceNumber', { number: draggedIndex! + 1 })}
+                      {draggedItem?.jobTitle || draggedItem?.company || t('forms.experience.experienceNumber', { number: draggedIndex! + 1 })}
                     </div>
                   </div>
                 )}
@@ -296,47 +219,29 @@ function AchievementsList({
 }) {
   const t = useTranslations();
   const [newAchievement, setNewAchievement] = useState('');
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-  const containerRef = useRef<HTMLUListElement>(null);
-  const scrollAnimationRef = useRef<number | null>(null);
-  const mouseYRef = useRef<number>(0);
 
-  const SCROLL_ZONE_HEIGHT = 150;
-  const MAX_SCROLL_SPEED = 25;
+  const handleReorder = (fromIndex: number, toIndex: number) => {
+    const newAchievements = [...achievements];
+    const [draggedItem] = newAchievements.splice(fromIndex, 1);
+    newAchievements.splice(toIndex, 0, draggedItem);
+    onChange(newAchievements);
+  };
 
-  const scrollLoop = useCallback(() => {
-    const clientY = mouseYRef.current;
-    const scrollZoneTop = SCROLL_ZONE_HEIGHT;
-    const scrollZoneBottom = window.innerHeight - SCROLL_ZONE_HEIGHT;
-
-    if (clientY < scrollZoneTop) {
-      const intensity = (scrollZoneTop - clientY) / SCROLL_ZONE_HEIGHT;
-      window.scrollBy({ top: -MAX_SCROLL_SPEED * intensity, behavior: 'instant' });
-    } else if (clientY > scrollZoneBottom) {
-      const intensity = (clientY - scrollZoneBottom) / SCROLL_ZONE_HEIGHT;
-      window.scrollBy({ top: MAX_SCROLL_SPEED * intensity, behavior: 'instant' });
-    }
-
-    scrollAnimationRef.current = requestAnimationFrame(scrollLoop);
-  }, []);
-
-  const startAutoScroll = useCallback(() => {
-    if (!scrollAnimationRef.current) {
-      scrollAnimationRef.current = requestAnimationFrame(scrollLoop);
-    }
-  }, [scrollLoop]);
-
-  const stopAutoScroll = useCallback(() => {
-    if (scrollAnimationRef.current) {
-      cancelAnimationFrame(scrollAnimationRef.current);
-      scrollAnimationRef.current = null;
-    }
-  }, []);
-
-  useEffect(() => {
-    return () => stopAutoScroll();
-  }, [stopAutoScroll]);
+  const {
+    draggedIndex,
+    containerRef,
+    handleDragStart,
+    handleDragOver,
+    handleDrop,
+    handleDragEnd,
+    handleContainerDragLeave,
+    isDragging,
+    getPlaceholderPosition,
+    getDraggedItem,
+  } = useDragReorder({
+    items: achievements,
+    onReorder: handleReorder,
+  });
 
   const handleAdd = () => {
     if (newAchievement.trim()) {
@@ -355,65 +260,6 @@ function AchievementsList({
     onChange(updatedAchievements);
   };
 
-  const handleDragStart = (e: React.DragEvent, index: number) => {
-    e.stopPropagation();
-    setDraggedIndex(index);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', 'achievement');
-    mouseYRef.current = e.clientY;
-    startAutoScroll();
-  };
-
-  const handleDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.dataTransfer.dropEffect = 'move';
-    if (dragOverIndex !== index) {
-      setDragOverIndex(index);
-    }
-    mouseYRef.current = e.clientY;
-  };
-
-  const handleContainerDragLeave = (e: React.DragEvent) => {
-    if (containerRef.current && !containerRef.current.contains(e.relatedTarget as Node)) {
-      setDragOverIndex(null);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
-    e.preventDefault();
-    e.stopPropagation();
-    stopAutoScroll();
-    if (draggedIndex === null || draggedIndex === dropIndex) {
-      setDraggedIndex(null);
-      setDragOverIndex(null);
-      return;
-    }
-
-    const newAchievements = [...achievements];
-    const [draggedItem] = newAchievements.splice(draggedIndex, 1);
-    newAchievements.splice(dropIndex, 0, draggedItem);
-    onChange(newAchievements);
-
-    setDraggedIndex(null);
-    setDragOverIndex(null);
-  };
-
-  const handleDragEnd = (e: React.DragEvent) => {
-    e.stopPropagation();
-    stopAutoScroll();
-    setDraggedIndex(null);
-    setDragOverIndex(null);
-  };
-
-  const getPlaceholderPosition = (index: number): 'before' | 'after' | null => {
-    if (draggedIndex === null || dragOverIndex === null) return null;
-    if (dragOverIndex !== index) return null;
-    if (draggedIndex === index) return null;
-
-    return draggedIndex > index ? 'before' : 'after';
-  };
-
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -422,13 +268,13 @@ function AchievementsList({
 
       {achievements.length > 0 && (
         <ul
-          ref={containerRef}
+          ref={containerRef as React.RefObject<HTMLUListElement>}
           className="space-y-2 mb-3"
           onDragLeave={handleContainerDragLeave}
         >
           {achievements.map((achievement, index) => {
             const placeholderPos = getPlaceholderPosition(index);
-            const isDragging = draggedIndex === index;
+            const draggedItem = getDraggedItem();
 
             return (
               <React.Fragment key={index}>
@@ -439,7 +285,7 @@ function AchievementsList({
                     onDrop={(e) => handleDrop(e, index)}
                   >
                     <span className="text-blue-400 text-sm truncate">
-                      {achievements[draggedIndex!]}
+                      {draggedItem}
                     </span>
                   </li>
                 )}
@@ -450,7 +296,7 @@ function AchievementsList({
                   onDrop={(e) => handleDrop(e, index)}
                   onDragEnd={handleDragEnd}
                   className={`flex items-center gap-2 cursor-grab active:cursor-grabbing ${
-                    isDragging ? 'opacity-30' : ''
+                    isDragging(index) ? 'opacity-30' : ''
                   }`}
                 >
                   <span className="text-gray-400 cursor-grab select-none">⋮⋮</span>
@@ -475,7 +321,7 @@ function AchievementsList({
                     onDrop={(e) => handleDrop(e, index)}
                   >
                     <span className="text-blue-400 text-sm truncate">
-                      {achievements[draggedIndex!]}
+                      {draggedItem}
                     </span>
                   </li>
                 )}
