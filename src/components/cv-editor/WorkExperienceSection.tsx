@@ -296,6 +296,47 @@ function AchievementsList({
 }) {
   const t = useTranslations();
   const [newAchievement, setNewAchievement] = useState('');
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const containerRef = useRef<HTMLUListElement>(null);
+  const scrollAnimationRef = useRef<number | null>(null);
+  const mouseYRef = useRef<number>(0);
+
+  const SCROLL_ZONE_HEIGHT = 150;
+  const MAX_SCROLL_SPEED = 25;
+
+  const scrollLoop = useCallback(() => {
+    const clientY = mouseYRef.current;
+    const scrollZoneTop = SCROLL_ZONE_HEIGHT;
+    const scrollZoneBottom = window.innerHeight - SCROLL_ZONE_HEIGHT;
+
+    if (clientY < scrollZoneTop) {
+      const intensity = (scrollZoneTop - clientY) / SCROLL_ZONE_HEIGHT;
+      window.scrollBy({ top: -MAX_SCROLL_SPEED * intensity, behavior: 'instant' });
+    } else if (clientY > scrollZoneBottom) {
+      const intensity = (clientY - scrollZoneBottom) / SCROLL_ZONE_HEIGHT;
+      window.scrollBy({ top: MAX_SCROLL_SPEED * intensity, behavior: 'instant' });
+    }
+
+    scrollAnimationRef.current = requestAnimationFrame(scrollLoop);
+  }, []);
+
+  const startAutoScroll = useCallback(() => {
+    if (!scrollAnimationRef.current) {
+      scrollAnimationRef.current = requestAnimationFrame(scrollLoop);
+    }
+  }, [scrollLoop]);
+
+  const stopAutoScroll = useCallback(() => {
+    if (scrollAnimationRef.current) {
+      cancelAnimationFrame(scrollAnimationRef.current);
+      scrollAnimationRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => stopAutoScroll();
+  }, [stopAutoScroll]);
 
   const handleAdd = () => {
     if (newAchievement.trim()) {
@@ -314,6 +355,65 @@ function AchievementsList({
     onChange(updatedAchievements);
   };
 
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    e.stopPropagation();
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', 'achievement');
+    mouseYRef.current = e.clientY;
+    startAutoScroll();
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.dataTransfer.dropEffect = 'move';
+    if (dragOverIndex !== index) {
+      setDragOverIndex(index);
+    }
+    mouseYRef.current = e.clientY;
+  };
+
+  const handleContainerDragLeave = (e: React.DragEvent) => {
+    if (containerRef.current && !containerRef.current.contains(e.relatedTarget as Node)) {
+      setDragOverIndex(null);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    stopAutoScroll();
+    if (draggedIndex === null || draggedIndex === dropIndex) {
+      setDraggedIndex(null);
+      setDragOverIndex(null);
+      return;
+    }
+
+    const newAchievements = [...achievements];
+    const [draggedItem] = newAchievements.splice(draggedIndex, 1);
+    newAchievements.splice(dropIndex, 0, draggedItem);
+    onChange(newAchievements);
+
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    e.stopPropagation();
+    stopAutoScroll();
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const getPlaceholderPosition = (index: number): 'before' | 'after' | null => {
+    if (draggedIndex === null || dragOverIndex === null) return null;
+    if (dragOverIndex !== index) return null;
+    if (draggedIndex === index) return null;
+
+    return draggedIndex > index ? 'before' : 'after';
+  };
+
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -321,27 +421,67 @@ function AchievementsList({
       </label>
 
       {achievements.length > 0 && (
-        <ul className="space-y-2 mb-3">
-          {achievements.map((achievement, index) => (
-            <li
-              key={index}
-              className="flex items-start gap-2"
-            >
-              <input
-                type="text"
-                value={achievement}
-                onChange={(e) => handleUpdate(index, e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                type="button"
-                onClick={() => handleRemove(index)}
-                className="text-red-600 hover:text-red-800 text-sm px-2 py-2"
-              >
-                {t('common.remove')}
-              </button>
-            </li>
-          ))}
+        <ul
+          ref={containerRef}
+          className="space-y-2 mb-3"
+          onDragLeave={handleContainerDragLeave}
+        >
+          {achievements.map((achievement, index) => {
+            const placeholderPos = getPlaceholderPosition(index);
+            const isDragging = draggedIndex === index;
+
+            return (
+              <React.Fragment key={index}>
+                {placeholderPos === 'before' && (
+                  <li
+                    className="flex items-center gap-2 px-3 py-2 border-2 border-dashed border-blue-400 rounded-md bg-blue-50"
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleDrop(e, index)}
+                  >
+                    <span className="text-blue-400 text-sm truncate">
+                      {achievements[draggedIndex!]}
+                    </span>
+                  </li>
+                )}
+                <li
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDrop={(e) => handleDrop(e, index)}
+                  onDragEnd={handleDragEnd}
+                  className={`flex items-center gap-2 cursor-grab active:cursor-grabbing ${
+                    isDragging ? 'opacity-30' : ''
+                  }`}
+                >
+                  <span className="text-gray-400 cursor-grab select-none">⋮⋮</span>
+                  <input
+                    type="text"
+                    value={achievement}
+                    onChange={(e) => handleUpdate(index, e.target.value)}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemove(index)}
+                    className="text-red-600 hover:text-red-800 text-sm px-2 py-2"
+                  >
+                    {t('common.remove')}
+                  </button>
+                </li>
+                {placeholderPos === 'after' && (
+                  <li
+                    className="flex items-center gap-2 px-3 py-2 border-2 border-dashed border-blue-400 rounded-md bg-blue-50"
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDrop={(e) => handleDrop(e, index)}
+                  >
+                    <span className="text-blue-400 text-sm truncate">
+                      {achievements[draggedIndex!]}
+                    </span>
+                  </li>
+                )}
+              </React.Fragment>
+            );
+          })}
         </ul>
       )}
 

@@ -243,6 +243,7 @@ function SkillsList({
   };
 
   const handleDragStart = (e: React.DragEvent, index: number) => {
+    e.stopPropagation();
     setDraggedIndex(index);
     e.dataTransfer.effectAllowed = 'move';
     // Set drag image to be slightly transparent
@@ -253,6 +254,7 @@ function SkillsList({
 
   const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
+    e.stopPropagation();
     e.dataTransfer.dropEffect = 'move';
     if (dragOverIndex !== index) {
       setDragOverIndex(index);
@@ -268,6 +270,7 @@ function SkillsList({
 
   const handleDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
+    e.stopPropagation();
     if (draggedIndex === null || draggedIndex === dropIndex) {
       setDraggedIndex(null);
       setDragOverIndex(null);
@@ -284,7 +287,8 @@ function SkillsList({
     setDragOverIndex(null);
   };
 
-  const handleDragEnd = () => {
+  const handleDragEnd = (e: React.DragEvent) => {
+    e.stopPropagation();
     setDraggedIndex(null);
     setDragOverIndex(null);
   };
