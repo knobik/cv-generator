@@ -25,6 +25,7 @@ interface CVContextType {
   addWorkExperience: (experience: WorkExperience) => void;
   updateWorkExperience: (id: string, experience: Partial<WorkExperience>) => void;
   removeWorkExperience: (id: string) => void;
+  reorderWorkExperience: (fromIndex: number, toIndex: number) => void;
   addEducation: (education: Education) => void;
   updateEducation: (id: string, education: Partial<Education>) => void;
   removeEducation: (id: string) => void;
@@ -137,6 +138,20 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
       const updated = {
         ...prev,
         workExperience: prev.workExperience.filter((exp) => exp.id !== id),
+      };
+      debouncedSave(updated);
+      return updated;
+    });
+  }, [debouncedSave]);
+
+  const reorderWorkExperience = useCallback((fromIndex: number, toIndex: number) => {
+    setCvData((prev) => {
+      const newWorkExperience = [...prev.workExperience];
+      const [movedExperience] = newWorkExperience.splice(fromIndex, 1);
+      newWorkExperience.splice(toIndex, 0, movedExperience);
+      const updated = {
+        ...prev,
+        workExperience: newWorkExperience,
       };
       debouncedSave(updated);
       return updated;
@@ -426,6 +441,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     addWorkExperience,
     updateWorkExperience,
     removeWorkExperience,
+    reorderWorkExperience,
     addEducation,
     updateEducation,
     removeEducation,
