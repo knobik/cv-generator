@@ -41,9 +41,11 @@ interface CVContextType {
   addCertification: (certification: Certification) => void;
   updateCertification: (id: string, certification: Partial<Certification>) => void;
   removeCertification: (id: string) => void;
+  reorderCertifications: (fromIndex: number, toIndex: number) => void;
   addLanguage: (language: Language) => void;
   updateLanguage: (id: string, language: Partial<Language>) => void;
   removeLanguage: (id: string) => void;
+  reorderLanguages: (fromIndex: number, toIndex: number) => void;
   addInterest: (interest: Interest) => void;
   updateInterest: (id: string, interest: Partial<Interest>) => void;
   removeInterest: (id: string) => void;
@@ -342,6 +344,20 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     });
   }, [debouncedSave]);
 
+  const reorderCertifications = useCallback((fromIndex: number, toIndex: number) => {
+    setCvData((prev) => {
+      const newCertifications = [...prev.certifications];
+      const [movedCertification] = newCertifications.splice(fromIndex, 1);
+      newCertifications.splice(toIndex, 0, movedCertification);
+      const updated = {
+        ...prev,
+        certifications: newCertifications,
+      };
+      debouncedSave(updated);
+      return updated;
+    });
+  }, [debouncedSave]);
+
   const addLanguage = useCallback((language: Language) => {
     setCvData((prev) => {
       const updated = {
@@ -371,6 +387,20 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
       const updated = {
         ...prev,
         languages: prev.languages.filter((lang) => lang.id !== id),
+      };
+      debouncedSave(updated);
+      return updated;
+    });
+  }, [debouncedSave]);
+
+  const reorderLanguages = useCallback((fromIndex: number, toIndex: number) => {
+    setCvData((prev) => {
+      const newLanguages = [...prev.languages];
+      const [movedLanguage] = newLanguages.splice(fromIndex, 1);
+      newLanguages.splice(toIndex, 0, movedLanguage);
+      const updated = {
+        ...prev,
+        languages: newLanguages,
       };
       debouncedSave(updated);
       return updated;
@@ -487,9 +517,11 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     addCertification,
     updateCertification,
     removeCertification,
+    reorderCertifications,
     addLanguage,
     updateLanguage,
     removeLanguage,
+    reorderLanguages,
     addInterest,
     updateInterest,
     removeInterest,
