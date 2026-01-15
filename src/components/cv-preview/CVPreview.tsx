@@ -185,9 +185,11 @@ export function CVPreview() {
           {interests && interests.length > 0 && (
             <section className="mb-4">
               <LeftSectionHeading>{t('preview.interests')}</LeftSectionHeading>
-              <p className="em-text-sm text-gray-700">
-                {interests.map((interest) => interest.name).join(', ')}
-              </p>
+              <ul className="list-disc list-outside ml-4 em-text-sm text-gray-700 marker:text-teal-600">
+                {interests.map((interest) => (
+                  <li key={interest.id}>{interest.name}</li>
+                ))}
+              </ul>
             </section>
           )}
         </div>
@@ -214,7 +216,7 @@ export function CVPreview() {
                       <p className="em-text-sm text-gray-700 mb-2">{exp.description}</p>
                     )}
                     {exp.achievements.length > 0 && (
-                      <ul className="list-disc list-outside ml-4 space-y-1">
+                      <ul className="list-disc list-outside ml-4 space-y-1 marker:text-teal-600">
                         {exp.achievements.map((achievement, idx) => (
                           <li key={idx} className="em-text-sm text-gray-700">{achievement}</li>
                         ))}
@@ -310,7 +312,7 @@ export function CVPreview() {
                       )}
                     </div>
                     {project.highlights.length > 0 && (
-                      <ul className="list-disc list-outside ml-4 mt-2 space-y-1">
+                      <ul className="list-disc list-outside ml-4 mt-2 space-y-1 marker:text-teal-600">
                         {project.highlights.map((highlight, idx) => (
                           <li key={idx} className="em-text-sm text-gray-700">{highlight}</li>
                         ))}
