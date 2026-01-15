@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useCVData } from '@/lib/hooks/useCVData';
 import { SkillCategory } from '@/types/cv';
@@ -17,7 +17,45 @@ export function SkillsSection() {
 
   const [draggedCategoryIndex, setDraggedCategoryIndex] = useState<number | null>(null);
   const [dragOverCategoryIndex, setDragOverCategoryIndex] = useState<number | null>(null);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollAnimationRef = useRef<number | null>(null);
+  const mouseYRef = useRef<number>(0);
+
+  const SCROLL_ZONE_HEIGHT = 150;
+  const MAX_SCROLL_SPEED = 25;
+
+  const scrollLoop = useCallback(() => {
+    const clientY = mouseYRef.current;
+    const scrollZoneTop = SCROLL_ZONE_HEIGHT;
+    const scrollZoneBottom = window.innerHeight - SCROLL_ZONE_HEIGHT;
+
+    if (clientY < scrollZoneTop) {
+      const intensity = (scrollZoneTop - clientY) / SCROLL_ZONE_HEIGHT;
+      window.scrollBy({ top: -MAX_SCROLL_SPEED * intensity, behavior: 'instant' });
+    } else if (clientY > scrollZoneBottom) {
+      const intensity = (clientY - scrollZoneBottom) / SCROLL_ZONE_HEIGHT;
+      window.scrollBy({ top: MAX_SCROLL_SPEED * intensity, behavior: 'instant' });
+    }
+
+    scrollAnimationRef.current = requestAnimationFrame(scrollLoop);
+  }, []);
+
+  const startAutoScroll = useCallback(() => {
+    if (!scrollAnimationRef.current) {
+      scrollAnimationRef.current = requestAnimationFrame(scrollLoop);
+    }
+  }, [scrollLoop]);
+
+  const stopAutoScroll = useCallback(() => {
+    if (scrollAnimationRef.current) {
+      cancelAnimationFrame(scrollAnimationRef.current);
+      scrollAnimationRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => stopAutoScroll();
+  }, [stopAutoScroll]);
 
   const handleAdd = () => {
     const newCategory: SkillCategory = {
@@ -32,6 +70,8 @@ export function SkillsSection() {
     setDraggedCategoryIndex(index);
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', 'category');
+    mouseYRef.current = e.clientY;
+    startAutoScroll();
   };
 
   const handleCategoryDragOver = (e: React.DragEvent, index: number) => {
@@ -40,6 +80,7 @@ export function SkillsSection() {
     if (dragOverCategoryIndex !== index) {
       setDragOverCategoryIndex(index);
     }
+    mouseYRef.current = e.clientY;
   };
 
   const handleContainerDragLeave = (e: React.DragEvent) => {
@@ -50,6 +91,7 @@ export function SkillsSection() {
 
   const handleCategoryDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
+    stopAutoScroll();
     if (draggedCategoryIndex === null || draggedCategoryIndex === dropIndex) {
       setDraggedCategoryIndex(null);
       setDragOverCategoryIndex(null);
@@ -62,6 +104,7 @@ export function SkillsSection() {
   };
 
   const handleCategoryDragEnd = () => {
+    stopAutoScroll();
     setDraggedCategoryIndex(null);
     setDragOverCategoryIndex(null);
   };
