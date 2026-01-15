@@ -49,6 +49,7 @@ interface CVContextType {
   addInterest: (interest: Interest) => void;
   updateInterest: (id: string, interest: Partial<Interest>) => void;
   removeInterest: (id: string) => void;
+  reorderInterests: (fromIndex: number, toIndex: number) => void;
   updateGDPRClause: (gdprClause: Partial<GDPRClause>) => void;
   updateSettings: (settings: Partial<CVSettings>) => void;
   updateLocale: (locale: string) => void;
@@ -442,6 +443,20 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     });
   }, [debouncedSave]);
 
+  const reorderInterests = useCallback((fromIndex: number, toIndex: number) => {
+    setCvData((prev) => {
+      const newInterests = [...(prev.interests || [])];
+      const [movedInterest] = newInterests.splice(fromIndex, 1);
+      newInterests.splice(toIndex, 0, movedInterest);
+      const updated = {
+        ...prev,
+        interests: newInterests,
+      };
+      debouncedSave(updated);
+      return updated;
+    });
+  }, [debouncedSave]);
+
   const updateGDPRClause = useCallback((gdprClause: Partial<GDPRClause>) => {
     setCvData((prev) => {
       const updated = {
@@ -525,6 +540,7 @@ export function CVProvider({ children }: { children: React.ReactNode }) {
     addInterest,
     updateInterest,
     removeInterest,
+    reorderInterests,
     updateGDPRClause,
     updateSettings,
     updateLocale,

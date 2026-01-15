@@ -169,7 +169,8 @@
     "interests": {
       "title": "Interests",
       "addInterest": "Add Interest",
-      "noInterests": "No interests added yet. Click \"Add Interest\" to get started.",
+      "addInterestPlaceholder": "Add an interest...",
+      "noInterests": "No interests added yet.",
       "interestNumber": "Interest #{number}",
       "interest": "Interest"
     },
