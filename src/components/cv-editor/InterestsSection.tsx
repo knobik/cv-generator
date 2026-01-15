@@ -72,16 +72,20 @@ export function InterestsSection() {
                   </li>
                 )}
                 <li
-                  draggable
-                  onDragStart={(e) => handleDragStart(e, index)}
                   onDragOver={(e) => handleDragOver(e, index)}
                   onDrop={(e) => handleDrop(e, index)}
-                  onDragEnd={handleDragEnd}
-                  className={`flex items-center gap-2 cursor-grab active:cursor-grabbing ${
+                  className={`flex items-center gap-2 ${
                     isDragging(index) ? 'opacity-30' : ''
                   }`}
                 >
-                  <span className="text-gray-400 cursor-grab select-none">⋮⋮</span>
+                  <span
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, index)}
+                    onDragEnd={handleDragEnd}
+                    className="text-gray-400 cursor-grab select-none hover:text-gray-600"
+                  >
+                    ⋮⋮
+                  </span>
                   <input
                     type="text"
                     value={interest.name}

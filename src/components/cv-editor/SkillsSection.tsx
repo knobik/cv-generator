@@ -79,18 +79,22 @@ export function SkillsSection() {
                   </div>
                 )}
                 <div
-                  draggable
-                  onDragStart={(e) => handleDragStart(e, index)}
                   onDragOver={(e) => handleDragOver(e, index)}
                   onDrop={(e) => handleDrop(e, index)}
-                  onDragEnd={handleDragEnd}
-                  className={`border border-gray-200 rounded-lg p-4 bg-white cursor-grab active:cursor-grabbing ${
+                  className={`border border-gray-200 rounded-lg p-4 bg-white ${
                     isDragging(index) ? 'opacity-30' : ''
                   }`}
                 >
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-medium text-gray-900 flex items-center gap-2">
-                      <span className="text-gray-400 cursor-grab">⋮⋮</span>
+                      <span
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, index)}
+                        onDragEnd={handleDragEnd}
+                        className="text-gray-400 cursor-grab hover:text-gray-600"
+                      >
+                        ⋮⋮
+                      </span>
                       {t('categoryNumber', { number: index + 1 })}
                     </h3>
                     <Button
@@ -225,7 +229,10 @@ function SkillsList({
                   {skill}
                   <button
                     type="button"
-                    onClick={() => handleRemove(index)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemove(index);
+                    }}
                     className="text-blue-700 hover:text-blue-900 font-bold"
                     title="Remove"
                   >
