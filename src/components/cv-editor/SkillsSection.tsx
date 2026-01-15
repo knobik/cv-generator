@@ -89,7 +89,13 @@ export function SkillsSection() {
                     <h3 className="font-medium text-gray-900 flex items-center gap-2">
                       <span
                         draggable
-                        onDragStart={(e) => handleDragStart(e, index)}
+                        onDragStart={(e) => {
+                          const card = e.currentTarget.closest('.border') as HTMLElement;
+                          if (card) {
+                            e.dataTransfer.setDragImage(card, 20, 20);
+                          }
+                          handleDragStart(e, index);
+                        }}
                         onDragEnd={handleDragEnd}
                         className="text-gray-400 cursor-grab hover:text-gray-600"
                       >

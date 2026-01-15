@@ -80,7 +80,13 @@ export function InterestsSection() {
                 >
                   <span
                     draggable
-                    onDragStart={(e) => handleDragStart(e, index)}
+                    onDragStart={(e) => {
+                      const row = e.currentTarget.closest('li') as HTMLElement;
+                      if (row) {
+                        e.dataTransfer.setDragImage(row, 20, 20);
+                      }
+                      handleDragStart(e, index);
+                    }}
                     onDragEnd={handleDragEnd}
                     className="text-gray-400 cursor-grab select-none hover:text-gray-600"
                   >
