@@ -9,6 +9,7 @@
     "import": "Import JSON",
     "clearAll": "Clear All",
     "printPdf": "Print / PDF",
+    "exportHtml": "Export HTML",
     "storage": "Storage"
   },
   "navigation": {
