@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Load NVM if available
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Check if package-lock.json is in sync with package.json
+if git diff --cached --name-only | grep -qE "^package(-lock)?\.json$"; then
+  echo "Checking package-lock.json sync..."
+  if ! npm ls >/dev/null 2>&1; then
+    echo "❌ package-lock.json is out of sync with package.json"
+    echo "Run 'npm install' to fix, then stage the updated package-lock.json"
+    exit 1
+  fi
+  echo "✓ package-lock.json is in sync"
+fi
