@@ -1,11 +1,13 @@
 #!/bin/sh
 
-# Load NVM if available
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+# Load NVM if present (needed because git hooks don't inherit shell env)
+[ -s "$HOME/.nvm/nvm.sh" ] && \. "$HOME/.nvm/nvm.sh"
 
 # Check if package-lock.json is in sync with package.json
 if git diff --cached --name-only | grep -qE "^package(-lock)?\.json$"; then
+  # Skip if npm not available
+  command -v npm >/dev/null 2>&1 || exit 0
+
   echo "Checking package-lock.json sync..."
   if ! npm ls >/dev/null 2>&1; then
     echo "❌ package-lock.json is out of sync with package.json"
