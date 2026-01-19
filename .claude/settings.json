@@ -1,5 +1,18 @@
 {
   "enabledPlugins": {
     "hookify@claude-plugins-official": true
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm run format:changed 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
   }
 }
