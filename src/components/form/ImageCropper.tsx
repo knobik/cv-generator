@@ -137,9 +137,7 @@ export function ImageCropper({
         </div>
 
         <div className="flex items-center gap-4">
-          <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
-            {t('zoom')}
-          </label>
+          <label className="text-sm font-medium text-gray-700 whitespace-nowrap">{t('zoom')}</label>
           <input
             type="range"
             min={1}

@@ -83,8 +83,7 @@
       "startDate": "Data rozpoczęcia",
       "endDate": "Data zakończenia",
       "current": "Obecnie tu pracuję",
-      "description": "Opis",
-      "achievements": "Kluczowe osiągnięcia"
+      "description": "Opis"
     },
     "education": {
       "title": "Edukacja",

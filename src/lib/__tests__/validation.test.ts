@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest'
+import { describe, expect, test } from 'vitest';
 import {
   personalInfoSchema,
   professionalSummarySchema,
@@ -13,47 +13,47 @@ import {
   validateCVData,
   validateEmail,
   validateUrl,
-} from '../validation'
+} from '../validation';
 
 describe('Validation Layer', () => {
   describe('validateEmail', () => {
     test('should accept valid email addresses', () => {
-      expect(validateEmail('user@example.com')).toBe(true)
-      expect(validateEmail('test.user@domain.co.uk')).toBe(true)
-      expect(validateEmail('name+tag@company.org')).toBe(true)
-    })
+      expect(validateEmail('user@example.com')).toBe(true);
+      expect(validateEmail('test.user@domain.co.uk')).toBe(true);
+      expect(validateEmail('name+tag@company.org')).toBe(true);
+    });
 
     test('should reject invalid email formats', () => {
-      expect(validateEmail('invalid')).toBe(false)
-      expect(validateEmail('missing@domain')).toBe(false)
-      expect(validateEmail('@domain.com')).toBe(false)
-      expect(validateEmail('user@')).toBe(false)
-      expect(validateEmail('user @domain.com')).toBe(false)
-    })
-  })
+      expect(validateEmail('invalid')).toBe(false);
+      expect(validateEmail('missing@domain')).toBe(false);
+      expect(validateEmail('@domain.com')).toBe(false);
+      expect(validateEmail('user@')).toBe(false);
+      expect(validateEmail('user @domain.com')).toBe(false);
+    });
+  });
 
   describe('validateUrl', () => {
     test('should accept valid HTTP URLs', () => {
-      expect(validateUrl('http://example.com')).toBe(true)
-      expect(validateUrl('http://www.example.com')).toBe(true)
-    })
+      expect(validateUrl('http://example.com')).toBe(true);
+      expect(validateUrl('http://www.example.com')).toBe(true);
+    });
 
     test('should accept valid HTTPS URLs', () => {
-      expect(validateUrl('https://example.com')).toBe(true)
-      expect(validateUrl('https://www.example.com/path')).toBe(true)
-      expect(validateUrl('https://subdomain.example.com')).toBe(true)
-    })
+      expect(validateUrl('https://example.com')).toBe(true);
+      expect(validateUrl('https://www.example.com/path')).toBe(true);
+      expect(validateUrl('https://subdomain.example.com')).toBe(true);
+    });
 
     test('should accept empty string', () => {
-      expect(validateUrl('')).toBe(true)
-    })
+      expect(validateUrl('')).toBe(true);
+    });
 
     test('should reject malformed URLs', () => {
-      expect(validateUrl('not-a-url')).toBe(false)
-      expect(validateUrl('example.com')).toBe(false)
-      expect(validateUrl('www.example.com')).toBe(false)
-    })
-  })
+      expect(validateUrl('not-a-url')).toBe(false);
+      expect(validateUrl('example.com')).toBe(false);
+      expect(validateUrl('www.example.com')).toBe(false);
+    });
+  });
 
   describe('personalInfoSchema', () => {
     test('should validate complete personal info', () => {
@@ -66,10 +66,10 @@ describe('Validation Layer', () => {
         linkedin: 'https://linkedin.com/in/johndoe',
         github: 'https://github.com/johndoe',
         photo: 'base64string',
-      }
-      const result = personalInfoSchema.safeParse(validData)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = personalInfoSchema.safeParse(validData);
+      expect(result.success).toBe(true);
+    });
 
     test('should accept empty email', () => {
       const data = {
@@ -80,10 +80,10 @@ describe('Validation Layer', () => {
         website: '',
         linkedin: '',
         github: '',
-      }
-      const result = personalInfoSchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = personalInfoSchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should reject invalid email format', () => {
       const data = {
@@ -91,10 +91,10 @@ describe('Validation Layer', () => {
         email: 'invalid-email',
         phone: '+1234567890',
         location: 'New York',
-      }
-      const result = personalInfoSchema.safeParse(data)
-      expect(result.success).toBe(false)
-    })
+      };
+      const result = personalInfoSchema.safeParse(data);
+      expect(result.success).toBe(false);
+    });
 
     test('should accept empty optional fields', () => {
       const data = {
@@ -106,10 +106,10 @@ describe('Validation Layer', () => {
         linkedin: '',
         github: '',
         photo: '',
-      }
-      const result = personalInfoSchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = personalInfoSchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should reject invalid URLs', () => {
       const data = {
@@ -118,31 +118,31 @@ describe('Validation Layer', () => {
         phone: '+1234567890',
         location: 'New York',
         website: 'not-a-url',
-      }
-      const result = personalInfoSchema.safeParse(data)
-      expect(result.success).toBe(false)
-    })
-  })
+      };
+      const result = personalInfoSchema.safeParse(data);
+      expect(result.success).toBe(false);
+    });
+  });
 
   describe('professionalSummarySchema', () => {
     test('should validate summary text', () => {
-      const data = { summary: 'Experienced developer with 5+ years.' }
-      const result = professionalSummarySchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      const data = { summary: 'Experienced developer with 5+ years.' };
+      const result = professionalSummarySchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should accept empty summary', () => {
-      const data = { summary: '' }
-      const result = professionalSummarySchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      const data = { summary: '' };
+      const result = professionalSummarySchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should require summary field', () => {
-      const data = {}
-      const result = professionalSummarySchema.safeParse(data)
-      expect(result.success).toBe(false)
-    })
-  })
+      const data = {};
+      const result = professionalSummarySchema.safeParse(data);
+      expect(result.success).toBe(false);
+    });
+  });
 
   describe('workExperienceSchema', () => {
     test('should validate complete work experience', () => {
@@ -156,10 +156,10 @@ describe('Validation Layer', () => {
         current: false,
         description: 'Built web applications',
         achievements: ['Improved performance by 40%'],
-      }
-      const result = workExperienceSchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = workExperienceSchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should require jobTitle, company, location', () => {
       const data = {
@@ -172,10 +172,10 @@ describe('Validation Layer', () => {
         current: false,
         description: '',
         achievements: [],
-      }
-      const result = workExperienceSchema.safeParse(data)
-      expect(result.success).toBe(false)
-    })
+      };
+      const result = workExperienceSchema.safeParse(data);
+      expect(result.success).toBe(false);
+    });
 
     test('should accept current position (endDate: null)', () => {
       const data = {
@@ -188,10 +188,10 @@ describe('Validation Layer', () => {
         current: true,
         description: '',
         achievements: [],
-      }
-      const result = workExperienceSchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = workExperienceSchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should validate achievements array', () => {
       const data = {
@@ -204,11 +204,11 @@ describe('Validation Layer', () => {
         current: true,
         description: '',
         achievements: ['Achievement 1', 'Achievement 2'],
-      }
-      const result = workExperienceSchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
-  })
+      };
+      const result = workExperienceSchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
+  });
 
   describe('educationSchema', () => {
     test('should validate complete education entry', () => {
@@ -222,10 +222,10 @@ describe('Validation Layer', () => {
         current: false,
         gpa: '3.8',
         description: 'Computer Science Major',
-      }
-      const result = educationSchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = educationSchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should require degree, institution, location', () => {
       const data = {
@@ -236,10 +236,10 @@ describe('Validation Layer', () => {
         startDate: '2016-09',
         endDate: null,
         current: false,
-      }
-      const result = educationSchema.safeParse(data)
-      expect(result.success).toBe(false)
-    })
+      };
+      const result = educationSchema.safeParse(data);
+      expect(result.success).toBe(false);
+    });
 
     test('should accept optional GPA and description', () => {
       const data = {
@@ -252,10 +252,10 @@ describe('Validation Layer', () => {
         current: false,
         gpa: '',
         description: '',
-      }
-      const result = educationSchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = educationSchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should accept current education (endDate: null)', () => {
       const data = {
@@ -266,11 +266,11 @@ describe('Validation Layer', () => {
         startDate: '2020-09',
         endDate: null,
         current: true,
-      }
-      const result = educationSchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
-  })
+      };
+      const result = educationSchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
+  });
 
   describe('skillCategorySchema', () => {
     test('should validate skill category with skills', () => {
@@ -278,31 +278,31 @@ describe('Validation Layer', () => {
         id: 'skill-1',
         categoryName: 'Programming Languages',
         skills: ['JavaScript', 'Python', 'TypeScript'],
-      }
-      const result = skillCategorySchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = skillCategorySchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should require category name', () => {
       const data = {
         id: 'skill-1',
         categoryName: '',
         skills: ['JavaScript'],
-      }
-      const result = skillCategorySchema.safeParse(data)
-      expect(result.success).toBe(false)
-    })
+      };
+      const result = skillCategorySchema.safeParse(data);
+      expect(result.success).toBe(false);
+    });
 
     test('should accept empty skills array', () => {
       const data = {
         id: 'skill-1',
         categoryName: 'Tools',
         skills: [],
-      }
-      const result = skillCategorySchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
-  })
+      };
+      const result = skillCategorySchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
+  });
 
   describe('projectSchema', () => {
     test('should validate complete project', () => {
@@ -316,10 +316,10 @@ describe('Validation Layer', () => {
         startDate: '2021-01',
         endDate: '2021-12',
         highlights: ['Built payment integration'],
-      }
-      const result = projectSchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = projectSchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should require name', () => {
       const data = {
@@ -328,10 +328,10 @@ describe('Validation Layer', () => {
         description: '',
         technologies: [],
         highlights: [],
-      }
-      const result = projectSchema.safeParse(data)
-      expect(result.success).toBe(false)
-    })
+      };
+      const result = projectSchema.safeParse(data);
+      expect(result.success).toBe(false);
+    });
 
     test('should accept empty optional URLs', () => {
       const data = {
@@ -342,10 +342,10 @@ describe('Validation Layer', () => {
         url: '',
         githubUrl: '',
         highlights: [],
-      }
-      const result = projectSchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = projectSchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should validate URL formats', () => {
       const data = {
@@ -355,11 +355,11 @@ describe('Validation Layer', () => {
         technologies: [],
         url: 'not-a-url',
         highlights: [],
-      }
-      const result = projectSchema.safeParse(data)
-      expect(result.success).toBe(false)
-    })
-  })
+      };
+      const result = projectSchema.safeParse(data);
+      expect(result.success).toBe(false);
+    });
+  });
 
   describe('certificationSchema', () => {
     test('should validate complete certification', () => {
@@ -371,10 +371,10 @@ describe('Validation Layer', () => {
         expiryDate: '2024-03',
         credentialId: 'ABC123',
         credentialUrl: 'https://aws.amazon.com/verification',
-      }
-      const result = certificationSchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = certificationSchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should require name, issuer, date', () => {
       const data = {
@@ -382,10 +382,10 @@ describe('Validation Layer', () => {
         name: '',
         issuer: '',
         date: '',
-      }
-      const result = certificationSchema.safeParse(data)
-      expect(result.success).toBe(false)
-    })
+      };
+      const result = certificationSchema.safeParse(data);
+      expect(result.success).toBe(false);
+    });
 
     test('should accept optional expiry and credential fields', () => {
       const data = {
@@ -396,10 +396,10 @@ describe('Validation Layer', () => {
         expiryDate: '',
         credentialId: '',
         credentialUrl: '',
-      }
-      const result = certificationSchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = certificationSchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should validate credential URL format', () => {
       const data = {
@@ -408,11 +408,11 @@ describe('Validation Layer', () => {
         issuer: 'Issuer',
         date: '2021-01',
         credentialUrl: 'invalid-url',
-      }
-      const result = certificationSchema.safeParse(data)
-      expect(result.success).toBe(false)
-    })
-  })
+      };
+      const result = certificationSchema.safeParse(data);
+      expect(result.success).toBe(false);
+    });
+  });
 
   describe('languageSchema', () => {
     test('should validate language with proficiency', () => {
@@ -420,44 +420,44 @@ describe('Validation Layer', () => {
         id: 'lang-1',
         language: 'English',
         proficiency: 'Native',
-      }
-      const result = languageSchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = languageSchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should require language name', () => {
       const data = {
         id: 'lang-1',
         language: '',
         proficiency: 'Native',
-      }
-      const result = languageSchema.safeParse(data)
-      expect(result.success).toBe(false)
-    })
+      };
+      const result = languageSchema.safeParse(data);
+      expect(result.success).toBe(false);
+    });
 
     test('should validate proficiency enum values', () => {
-      const proficiencies = ['Native', 'C2', 'C1', 'B2', 'B1', 'A2', 'A1']
+      const proficiencies = ['Native', 'C2', 'C1', 'B2', 'B1', 'A2', 'A1'];
       proficiencies.forEach((proficiency) => {
         const data = {
           id: 'lang-1',
           language: 'English',
           proficiency,
-        }
-        const result = languageSchema.safeParse(data)
-        expect(result.success).toBe(true)
-      })
-    })
+        };
+        const result = languageSchema.safeParse(data);
+        expect(result.success).toBe(true);
+      });
+    });
 
     test('should reject invalid proficiency levels', () => {
       const data = {
         id: 'lang-1',
         language: 'English',
         proficiency: 'Expert',
-      }
-      const result = languageSchema.safeParse(data)
-      expect(result.success).toBe(false)
-    })
-  })
+      };
+      const result = languageSchema.safeParse(data);
+      expect(result.success).toBe(false);
+    });
+  });
 
   describe('cvDataSchema', () => {
     test('should validate complete CV data structure', () => {
@@ -487,10 +487,10 @@ describe('Validation Layer', () => {
           lastUpdated: '2026-01-11T00:00:00.000Z',
           version: '1.0.0',
         },
-      }
-      const result = cvDataSchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = cvDataSchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should validate CV data without gdprClause', () => {
       const data = {
@@ -513,10 +513,10 @@ describe('Validation Layer', () => {
           lastUpdated: '2026-01-11T00:00:00.000Z',
           version: '1.0.0',
         },
-      }
-      const result = cvDataSchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = cvDataSchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should validate all nested sections', () => {
       const data = {
@@ -591,10 +591,10 @@ describe('Validation Layer', () => {
           lastUpdated: '2026-01-11',
           version: '1.0.0',
         },
-      }
-      const result = cvDataSchema.safeParse(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = cvDataSchema.safeParse(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should require metadata fields', () => {
       const data = {
@@ -612,10 +612,10 @@ describe('Validation Layer', () => {
         certifications: [],
         languages: [],
         metadata: {},
-      }
-      const result = cvDataSchema.safeParse(data)
-      expect(result.success).toBe(false)
-    })
+      };
+      const result = cvDataSchema.safeParse(data);
+      expect(result.success).toBe(false);
+    });
 
     test('should catch nested validation errors', () => {
       const data = {
@@ -636,11 +636,11 @@ describe('Validation Layer', () => {
           lastUpdated: '2026-01-11',
           version: '1.0.0',
         },
-      }
-      const result = cvDataSchema.safeParse(data)
-      expect(result.success).toBe(false)
-    })
-  })
+      };
+      const result = cvDataSchema.safeParse(data);
+      expect(result.success).toBe(false);
+    });
+  });
 
   describe('validatePersonalInfo', () => {
     test('should return success for valid data', () => {
@@ -649,19 +649,19 @@ describe('Validation Layer', () => {
         email: 'john@example.com',
         phone: '+1234567890',
         location: 'New York',
-      }
-      const result = validatePersonalInfo(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = validatePersonalInfo(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should return error for invalid data', () => {
       const data = {
         fullName: 'John Doe',
         email: 'invalid-email',
-      }
-      const result = validatePersonalInfo(data)
-      expect(result.success).toBe(false)
-    })
+      };
+      const result = validatePersonalInfo(data);
+      expect(result.success).toBe(false);
+    });
 
     test('should include error messages', () => {
       const data = {
@@ -669,13 +669,13 @@ describe('Validation Layer', () => {
         email: 'invalid-email',
         phone: '+1234567890',
         location: 'New York',
-      }
-      const result = validatePersonalInfo(data)
+      };
+      const result = validatePersonalInfo(data);
       if (!result.success) {
-        expect(result.error.issues.length).toBeGreaterThan(0)
+        expect(result.error.issues.length).toBeGreaterThan(0);
       }
-    })
-  })
+    });
+  });
 
   describe('validateCVData', () => {
     test('should validate complete CV', () => {
@@ -700,10 +700,10 @@ describe('Validation Layer', () => {
           lastUpdated: '2026-01-11',
           version: '1.0.0',
         },
-      }
-      const result = validateCVData(data)
-      expect(result.success).toBe(true)
-    })
+      };
+      const result = validateCVData(data);
+      expect(result.success).toBe(true);
+    });
 
     test('should catch nested validation errors', () => {
       const data = {
@@ -712,15 +712,15 @@ describe('Validation Layer', () => {
           email: 'invalid',
         },
         metadata: {},
-      }
-      const result = validateCVData(data)
-      expect(result.success).toBe(false)
-    })
+      };
+      const result = validateCVData(data);
+      expect(result.success).toBe(false);
+    });
 
     test('should handle missing required fields', () => {
-      const data = {}
-      const result = validateCVData(data)
-      expect(result.success).toBe(false)
-    })
-  })
-})
+      const data = {};
+      const result = validateCVData(data);
+      expect(result.success).toBe(false);
+    });
+  });
+});

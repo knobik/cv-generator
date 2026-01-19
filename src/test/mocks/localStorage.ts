@@ -1,27 +1,27 @@
-import { vi } from 'vitest'
+import { vi } from 'vitest';
 
 export const createLocalStorageMock = () => {
-  let store: Record<string, string> = {}
+  let store: Record<string, string> = {};
 
   return {
     getItem: vi.fn((key: string) => store[key] || null),
     setItem: vi.fn((key: string, value: string) => {
-      store[key] = value.toString()
+      store[key] = value.toString();
     }),
     removeItem: vi.fn((key: string) => {
-      delete store[key]
+      delete store[key];
     }),
     clear: vi.fn(() => {
-      store = {}
+      store = {};
     }),
     get length() {
-      return Object.keys(store).length
+      return Object.keys(store).length;
     },
     key: vi.fn((index: number) => {
-      const keys = Object.keys(store)
-      return keys[index] || null
+      const keys = Object.keys(store);
+      return keys[index] || null;
     }),
-  }
-}
+  };
+};
 
-export const localStorageMock = createLocalStorageMock()
+export const localStorageMock = createLocalStorageMock();

@@ -83,8 +83,7 @@
       "startDate": "Start Date",
       "endDate": "End Date",
       "current": "I currently work here",
-      "description": "Description",
-      "achievements": "Key Achievements"
+      "description": "Description"
     },
     "education": {
       "title": "Education",

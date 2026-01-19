@@ -10,7 +10,21 @@ import { FormInput } from '../form/FormInput';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 
-const proficiencyLevels: ProficiencyLevel[] = ['Native', 'C2', 'C2+', 'C1', 'C1+', 'B2', 'B2+', 'B1', 'B1+', 'A2', 'A2+', 'A1', 'A1+'];
+const proficiencyLevels: ProficiencyLevel[] = [
+  'Native',
+  'C2',
+  'C2+',
+  'C1',
+  'C1+',
+  'B2',
+  'B2+',
+  'B1',
+  'B1+',
+  'A2',
+  'A2+',
+  'A1',
+  'A1+',
+];
 
 export function LanguagesSection() {
   const t = useTranslations('forms.languages');
@@ -54,9 +68,7 @@ export function LanguagesSection() {
       }
     >
       {languages.length === 0 ? (
-        <p className="text-gray-500 text-center py-8">
-          {t('noLanguages')}
-        </p>
+        <p className="text-gray-500 text-center py-8">{t('noLanguages')}</p>
       ) : (
         <div
           ref={containerRef as React.RefObject<HTMLDivElement>}
@@ -87,62 +99,58 @@ export function LanguagesSection() {
                     isDragging(index) ? 'opacity-30' : ''
                   }`}
                 >
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-medium text-gray-900 flex items-center gap-2">
-                  <span
-                    draggable
-                    onDragStart={(e) => {
-                      const card = e.currentTarget.closest('.border') as HTMLElement;
-                      if (card) {
-                        e.dataTransfer.setDragImage(card, 20, 20);
-                      }
-                      handleDragStart(e, index);
-                    }}
-                    onDragEnd={handleDragEnd}
-                    className="text-gray-400 cursor-grab hover:text-gray-600"
-                  >
-                    ⋮⋮
-                  </span>
-                  {t('languageNumber', { number: index + 1 })}
-                </h3>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={() => removeLanguage(lang.id)}
-                >
-                  {tCommon('remove')}
-                </Button>
-              </div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-medium text-gray-900 flex items-center gap-2">
+                      <span
+                        draggable
+                        onDragStart={(e) => {
+                          const card = e.currentTarget.closest('.border') as HTMLElement;
+                          if (card) {
+                            e.dataTransfer.setDragImage(card, 20, 20);
+                          }
+                          handleDragStart(e, index);
+                        }}
+                        onDragEnd={handleDragEnd}
+                        className="text-gray-400 cursor-grab hover:text-gray-600"
+                      >
+                        ⋮⋮
+                      </span>
+                      {t('languageNumber', { number: index + 1 })}
+                    </h3>
+                    <Button variant="danger" size="sm" onClick={() => removeLanguage(lang.id)}>
+                      {tCommon('remove')}
+                    </Button>
+                  </div>
 
-              <div className="space-y-4">
-                <FormInput
-                  label={t('language')}
-                  placeholder="English, Spanish, Mandarin, etc."
-                  value={lang.language}
-                  onChange={(e) =>
-                    updateLanguage(lang.id, { language: e.target.value })
-                  }
-                />
+                  <div className="space-y-4">
+                    <FormInput
+                      label={t('language')}
+                      placeholder="English, Spanish, Mandarin, etc."
+                      value={lang.language}
+                      onChange={(e) => updateLanguage(lang.id, { language: e.target.value })}
+                    />
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t('proficiency')}
-                  </label>
-                  <select
-                    value={lang.proficiency}
-                    onChange={(e) =>
-                      updateLanguage(lang.id, { proficiency: e.target.value as ProficiencyLevel })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    {proficiencyLevels.map((level) => (
-                      <option key={level} value={level}>
-                        {t(`proficiencyLevels.${level}`)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {t('proficiency')}
+                      </label>
+                      <select
+                        value={lang.proficiency}
+                        onChange={(e) =>
+                          updateLanguage(lang.id, {
+                            proficiency: e.target.value as ProficiencyLevel,
+                          })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        {proficiencyLevels.map((level) => (
+                          <option key={level} value={level}>
+                            {t(`proficiencyLevels.${level}`)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
                 </div>
                 {placeholderPos === 'after' && (
                   <div

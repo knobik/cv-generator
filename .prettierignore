@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+
+# Coverage
+coverage/
+
+# Cache
+.cache/
+*.tsbuildinfo
+
+# Package manager
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+
+# Generated files
+*.min.js
+*.min.css
+
+# Markdown files
+*.md

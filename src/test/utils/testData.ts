@@ -9,7 +9,7 @@ import {
   Certification,
   Language,
   GDPRClause,
-} from '@/types/cv'
+} from '@/types/cv';
 
 export const mockPersonalInfo: PersonalInfo = {
   fullName: 'John Doe',
@@ -20,11 +20,11 @@ export const mockPersonalInfo: PersonalInfo = {
   linkedin: 'https://linkedin.com/in/johndoe',
   github: 'https://github.com/johndoe',
   photo: '',
-}
+};
 
 export const mockProfessionalSummary: ProfessionalSummary = {
   summary: 'Experienced software engineer with 5+ years in full-stack development.',
-}
+};
 
 export const mockWorkExperience: WorkExperience = {
   id: 'work-1',
@@ -34,9 +34,9 @@ export const mockWorkExperience: WorkExperience = {
   startDate: '2020-01',
   endDate: null,
   current: true,
-  description: 'Full-stack development',
-  achievements: ['Led team of 5 developers', 'Improved performance by 40%'],
-}
+  description:
+    'Full-stack development with **React** and *Node.js*.\n\n- Led team of 5 developers\n- Improved performance by 40%',
+};
 
 export const mockEducation: Education = {
   id: 'edu-1',
@@ -47,14 +47,14 @@ export const mockEducation: Education = {
   endDate: '2016-05',
   current: false,
   gpa: '3.8',
-  description: 'Cum Laude, Dean\'s List',
-}
+  description: "Cum Laude, Dean's List",
+};
 
 export const mockSkillCategory: SkillCategory = {
   id: 'skill-1',
   categoryName: 'Programming Languages',
   skills: ['JavaScript', 'TypeScript', 'Python'],
-}
+};
 
 export const mockProject: Project = {
   id: 'project-1',
@@ -63,7 +63,7 @@ export const mockProject: Project = {
   description: 'Full-stack e-commerce application',
   technologies: ['React', 'Node.js', 'MongoDB'],
   highlights: ['Processed 10k+ transactions', 'Integrated payment gateway'],
-}
+};
 
 export const mockCertification: Certification = {
   id: 'cert-1',
@@ -71,17 +71,17 @@ export const mockCertification: Certification = {
   issuer: 'Amazon Web Services',
   date: '2021-03',
   credentialUrl: 'https://aws.amazon.com/verification/cert123',
-}
+};
 
 export const mockLanguage: Language = {
   id: 'lang-1',
   language: 'English',
   proficiency: 'Native',
-}
+};
 
 export const mockGDPRClause: GDPRClause = {
   text: 'I hereby give consent for my personal data included in my application to be processed for the purposes of the recruitment process under the European Parliament and Council of the European Union Regulation on the protection of natural persons as of 27 April 2016, with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (Data Protection Directive).',
-}
+};
 
 export const mockCVData: CVData = {
   personalInfo: mockPersonalInfo,
@@ -99,4 +99,4 @@ export const mockCVData: CVData = {
     version: '1.0.0',
     locale: 'en',
   },
-}
+};

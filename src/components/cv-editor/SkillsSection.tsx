@@ -13,7 +13,13 @@ import { Card } from '../ui/Card';
 export function SkillsSection() {
   const t = useTranslations('forms.skills');
   const tCommon = useTranslations('common');
-  const { cvData, addSkillCategory, updateSkillCategory, removeSkillCategory, reorderSkillCategories } = useCVData();
+  const {
+    cvData,
+    addSkillCategory,
+    updateSkillCategory,
+    removeSkillCategory,
+    reorderSkillCategories,
+  } = useCVData();
   const { skills } = cvData;
 
   const {
@@ -52,9 +58,7 @@ export function SkillsSection() {
       }
     >
       {skills.length === 0 ? (
-        <p className="text-gray-500 text-center py-8">
-          {t('noSkills')}
-        </p>
+        <p className="text-gray-500 text-center py-8">{t('noSkills')}</p>
       ) : (
         <div
           ref={containerRef as React.RefObject<HTMLDivElement>}
@@ -74,7 +78,8 @@ export function SkillsSection() {
                     onDrop={(e) => handleDrop(e, index)}
                   >
                     <div className="text-blue-400 font-medium">
-                      {draggedCategory?.categoryName || t('categoryNumber', { number: draggedIndex! + 1 })}
+                      {draggedCategory?.categoryName ||
+                        t('categoryNumber', { number: draggedIndex! + 1 })}
                     </div>
                   </div>
                 )}
@@ -124,9 +129,7 @@ export function SkillsSection() {
 
                     <SkillsList
                       skills={category.skills}
-                      onChange={(skills) =>
-                        updateSkillCategory(category.id, { skills })
-                      }
+                      onChange={(skills) => updateSkillCategory(category.id, { skills })}
                     />
                   </div>
                 </div>
@@ -137,7 +140,8 @@ export function SkillsSection() {
                     onDrop={(e) => handleDrop(e, index)}
                   >
                     <div className="text-blue-400 font-medium">
-                      {draggedCategory?.categoryName || t('categoryNumber', { number: draggedIndex! + 1 })}
+                      {draggedCategory?.categoryName ||
+                        t('categoryNumber', { number: draggedIndex! + 1 })}
                     </div>
                   </div>
                 )}
@@ -197,9 +201,7 @@ function SkillsList({
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        {t('skills')}
-      </label>
+      <label className="block text-sm font-medium text-gray-700 mb-2">{t('skills')}</label>
 
       {skills.length > 0 && (
         <div

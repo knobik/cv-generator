@@ -117,47 +117,59 @@ export function useDragReorder<T>({
     return () => stopAutoScroll();
   }, [stopAutoScroll]);
 
-  const handleDragStart = useCallback((e: React.DragEvent, index: number) => {
-    e.stopPropagation();
-    setDraggedIndex(index);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', String(index));
-    mouseYRef.current = e.clientY;
-    startAutoScroll();
-  }, [startAutoScroll]);
+  const handleDragStart = useCallback(
+    (e: React.DragEvent, index: number) => {
+      e.stopPropagation();
+      setDraggedIndex(index);
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', String(index));
+      mouseYRef.current = e.clientY;
+      startAutoScroll();
+    },
+    [startAutoScroll]
+  );
 
-  const handleDragOver = useCallback((e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    e.stopPropagation();
-    e.dataTransfer.dropEffect = 'move';
-    if (dragOverIndex !== index) {
-      setDragOverIndex(index);
-    }
-    mouseYRef.current = e.clientY;
-  }, [dragOverIndex]);
+  const handleDragOver = useCallback(
+    (e: React.DragEvent, index: number) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.dataTransfer.dropEffect = 'move';
+      if (dragOverIndex !== index) {
+        setDragOverIndex(index);
+      }
+      mouseYRef.current = e.clientY;
+    },
+    [dragOverIndex]
+  );
 
-  const handleDrop = useCallback((e: React.DragEvent, dropIndex: number) => {
-    e.preventDefault();
-    e.stopPropagation();
-    stopAutoScroll();
+  const handleDrop = useCallback(
+    (e: React.DragEvent, dropIndex: number) => {
+      e.preventDefault();
+      e.stopPropagation();
+      stopAutoScroll();
 
-    if (draggedIndex === null || draggedIndex === dropIndex) {
+      if (draggedIndex === null || draggedIndex === dropIndex) {
+        setDraggedIndex(null);
+        setDragOverIndex(null);
+        return;
+      }
+
+      onReorder(draggedIndex, dropIndex);
       setDraggedIndex(null);
       setDragOverIndex(null);
-      return;
-    }
+    },
+    [draggedIndex, onReorder, stopAutoScroll]
+  );
 
-    onReorder(draggedIndex, dropIndex);
-    setDraggedIndex(null);
-    setDragOverIndex(null);
-  }, [draggedIndex, onReorder, stopAutoScroll]);
-
-  const handleDragEnd = useCallback((e: React.DragEvent) => {
-    e.stopPropagation();
-    stopAutoScroll();
-    setDraggedIndex(null);
-    setDragOverIndex(null);
-  }, [stopAutoScroll]);
+  const handleDragEnd = useCallback(
+    (e: React.DragEvent) => {
+      e.stopPropagation();
+      stopAutoScroll();
+      setDraggedIndex(null);
+      setDragOverIndex(null);
+    },
+    [stopAutoScroll]
+  );
 
   const handleContainerDragLeave = useCallback((e: React.DragEvent) => {
     if (containerRef.current && !containerRef.current.contains(e.relatedTarget as Node)) {
@@ -165,17 +177,23 @@ export function useDragReorder<T>({
     }
   }, []);
 
-  const isDragging = useCallback((index: number) => {
-    return draggedIndex === index;
-  }, [draggedIndex]);
+  const isDragging = useCallback(
+    (index: number) => {
+      return draggedIndex === index;
+    },
+    [draggedIndex]
+  );
 
-  const getPlaceholderPosition = useCallback((index: number): 'before' | 'after' | null => {
-    if (draggedIndex === null || dragOverIndex === null) return null;
-    if (dragOverIndex !== index) return null;
-    if (draggedIndex === index) return null;
+  const getPlaceholderPosition = useCallback(
+    (index: number): 'before' | 'after' | null => {
+      if (draggedIndex === null || dragOverIndex === null) return null;
+      if (dragOverIndex !== index) return null;
+      if (draggedIndex === index) return null;
 
-    return draggedIndex > index ? 'before' : 'after';
-  }, [draggedIndex, dragOverIndex]);
+      return draggedIndex > index ? 'before' : 'after';
+    },
+    [draggedIndex, dragOverIndex]
+  );
 
   const getDraggedItem = useCallback((): T | null => {
     if (draggedIndex === null) return null;

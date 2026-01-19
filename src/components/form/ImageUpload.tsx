@@ -17,7 +17,14 @@ interface ImageUploadProps {
 export function ImageUpload({ label, value, onChange, error }: ImageUploadProps) {
   const t = useTranslations('forms.personalInfo');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { preview, isUploading, error: uploadError, uploadImage, clearImage, setPreview } = useImageUpload();
+  const {
+    preview,
+    isUploading,
+    error: uploadError,
+    uploadImage,
+    clearImage,
+    setPreview,
+  } = useImageUpload();
 
   const [showCropper, setShowCropper] = useState(false);
   const [imageToCrop, setImageToCrop] = useState<string | null>(null);
@@ -137,20 +144,10 @@ export function ImageUpload({ label, value, onChange, error }: ImageUploadProps)
 
           {displayImage && (
             <div className="flex gap-2 mt-2">
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                onClick={handleEditPhoto}
-              >
+              <Button type="button" variant="secondary" size="sm" onClick={handleEditPhoto}>
                 {t('editPhoto')}
               </Button>
-              <Button
-                type="button"
-                variant="danger"
-                size="sm"
-                onClick={handleRemove}
-              >
+              <Button type="button" variant="danger" size="sm" onClick={handleRemove}>
                 {t('removePhoto')}
               </Button>
             </div>

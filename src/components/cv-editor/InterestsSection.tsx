@@ -43,11 +43,7 @@ export function InterestsSection() {
   };
 
   return (
-    <Card
-      header={
-        <h2 className="text-lg font-semibold">{t('title')}</h2>
-      }
-    >
+    <Card header={<h2 className="text-lg font-semibold">{t('title')}</h2>}>
       {interests.length > 0 && (
         <ul
           ref={containerRef as React.RefObject<HTMLUListElement>}
@@ -66,17 +62,13 @@ export function InterestsSection() {
                     onDragOver={(e) => handleDragOver(e, index)}
                     onDrop={(e) => handleDrop(e, index)}
                   >
-                    <span className="text-blue-400 text-sm truncate">
-                      {draggedItem?.name}
-                    </span>
+                    <span className="text-blue-400 text-sm truncate">{draggedItem?.name}</span>
                   </li>
                 )}
                 <li
                   onDragOver={(e) => handleDragOver(e, index)}
                   onDrop={(e) => handleDrop(e, index)}
-                  className={`flex items-center gap-2 ${
-                    isDragging(index) ? 'opacity-30' : ''
-                  }`}
+                  className={`flex items-center gap-2 ${isDragging(index) ? 'opacity-30' : ''}`}
                 >
                   <span
                     draggable
@@ -113,9 +105,7 @@ export function InterestsSection() {
                     onDragOver={(e) => handleDragOver(e, index)}
                     onDrop={(e) => handleDrop(e, index)}
                   >
-                    <span className="text-blue-400 text-sm truncate">
-                      {draggedItem?.name}
-                    </span>
+                    <span className="text-blue-400 text-sm truncate">{draggedItem?.name}</span>
                   </li>
                 )}
               </React.Fragment>
@@ -125,9 +115,7 @@ export function InterestsSection() {
       )}
 
       {interests.length === 0 && (
-        <p className="text-gray-500 text-center py-4 mb-4">
-          {t('noInterests')}
-        </p>
+        <p className="text-gray-500 text-center py-4 mb-4">{t('noInterests')}</p>
       )}
 
       <div className="flex gap-2">

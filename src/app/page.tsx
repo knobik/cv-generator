@@ -49,13 +49,18 @@ export default function HomePage() {
     { id: 'education', labelKey: 'navigation.education', component: EducationSection },
     { id: 'skills', labelKey: 'navigation.skills', component: SkillsSection },
     { id: 'projects', labelKey: 'navigation.projects', component: ProjectsSection },
-    { id: 'certifications', labelKey: 'navigation.certifications', component: CertificationsSection },
+    {
+      id: 'certifications',
+      labelKey: 'navigation.certifications',
+      component: CertificationsSection,
+    },
     { id: 'languages', labelKey: 'navigation.languages', component: LanguagesSection },
     { id: 'interests', labelKey: 'navigation.interests', component: InterestsSection },
     { id: 'gdpr', labelKey: 'navigation.gdpr', component: GDPRSection },
   ];
 
-  const ActiveSectionComponent = sections.find((s) => s.id === activeSection)?.component || PersonalInfoSection;
+  const ActiveSectionComponent =
+    sections.find((s) => s.id === activeSection)?.component || PersonalInfoSection;
 
   return (
     <div className="min-h-screen bg-gray-50 print:bg-white">
@@ -97,10 +102,10 @@ export default function HomePage() {
             <div className="mb-4 print:hidden">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">{t('preview.livePreview')}</h2>
-                  <p className="text-sm text-gray-600">
-                    {t('preview.previewDescription')}
-                  </p>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    {t('preview.livePreview')}
+                  </h2>
+                  <p className="text-sm text-gray-600">{t('preview.previewDescription')}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <label htmlFor="fontSize" className="text-sm text-gray-600">
@@ -123,10 +128,7 @@ export default function HomePage() {
               ref={previewContainerRef}
               className="a4-preview-container rounded-lg max-h-[calc(100vh-200px)] print:overflow-visible print:max-h-none print:bg-white print:p-0"
             >
-              <div
-                className="a4-preview-wrapper"
-                style={{ transform: `scale(${previewScale})` }}
-              >
+              <div className="a4-preview-wrapper" style={{ transform: `scale(${previewScale})` }}>
                 <CVPreview />
               </div>
             </div>

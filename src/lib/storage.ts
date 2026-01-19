@@ -29,9 +29,7 @@ export function saveCVData(data: CVData): void {
     localStorage.setItem(STORAGE_KEY, jsonString);
   } catch (error) {
     if (error instanceof Error && error.name === 'QuotaExceededError') {
-      throw new StorageError(
-        'Storage quota exceeded. Please remove some data or export your CV.'
-      );
+      throw new StorageError('Storage quota exceeded. Please remove some data or export your CV.');
     }
     throw new StorageError('Failed to save CV data');
   }
@@ -136,7 +134,7 @@ export function formatBytes(bytes: number): string {
   const sizes = ['Bytes', 'KB', 'MB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
 }
 
 /**

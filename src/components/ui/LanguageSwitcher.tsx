@@ -14,9 +14,7 @@ export function LanguageSwitcher() {
           key={loc}
           onClick={() => setLocale(loc as Locale)}
           className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-            locale === loc
-              ? 'bg-blue-600 text-white'
-              : 'text-gray-700 hover:bg-gray-200'
+            locale === loc ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-200'
           }`}
           aria-label={`Switch to ${localeNames[loc]}`}
         >

@@ -13,7 +13,13 @@ import { Card } from '../ui/Card';
 export function CertificationsSection() {
   const t = useTranslations('forms.certifications');
   const tCommon = useTranslations('common');
-  const { cvData, addCertification, updateCertification, removeCertification, reorderCertifications } = useCVData();
+  const {
+    cvData,
+    addCertification,
+    updateCertification,
+    removeCertification,
+    reorderCertifications,
+  } = useCVData();
   const { certifications } = cvData;
 
   const {
@@ -56,9 +62,7 @@ export function CertificationsSection() {
       }
     >
       {certifications.length === 0 ? (
-        <p className="text-gray-500 text-center py-8">
-          {t('noCertifications')}
-        </p>
+        <p className="text-gray-500 text-center py-8">{t('noCertifications')}</p>
       ) : (
         <div
           ref={containerRef as React.RefObject<HTMLDivElement>}
@@ -89,91 +93,81 @@ export function CertificationsSection() {
                     isDragging(index) ? 'opacity-30' : ''
                   }`}
                 >
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-medium text-gray-900 flex items-center gap-2">
-                  <span
-                    draggable
-                    onDragStart={(e) => {
-                      const card = e.currentTarget.closest('.border') as HTMLElement;
-                      if (card) {
-                        e.dataTransfer.setDragImage(card, 20, 20);
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-medium text-gray-900 flex items-center gap-2">
+                      <span
+                        draggable
+                        onDragStart={(e) => {
+                          const card = e.currentTarget.closest('.border') as HTMLElement;
+                          if (card) {
+                            e.dataTransfer.setDragImage(card, 20, 20);
+                          }
+                          handleDragStart(e, index);
+                        }}
+                        onDragEnd={handleDragEnd}
+                        className="text-gray-400 cursor-grab hover:text-gray-600"
+                      >
+                        ⋮⋮
+                      </span>
+                      {t('certificationNumber', { number: index + 1 })}
+                    </h3>
+                    <Button variant="danger" size="sm" onClick={() => removeCertification(cert.id)}>
+                      {tCommon('remove')}
+                    </Button>
+                  </div>
+
+                  <div className="space-y-4">
+                    <FormInput
+                      label={t('name')}
+                      placeholder="AWS Certified Solutions Architect"
+                      value={cert.name}
+                      onChange={(e) => updateCertification(cert.id, { name: e.target.value })}
+                    />
+
+                    <FormInput
+                      label={t('issuer')}
+                      placeholder="Amazon Web Services"
+                      value={cert.issuer}
+                      onChange={(e) => updateCertification(cert.id, { issuer: e.target.value })}
+                    />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormInput
+                        label={t('date')}
+                        type="month"
+                        value={cert.date}
+                        onChange={(e) => updateCertification(cert.id, { date: e.target.value })}
+                      />
+
+                      <FormInput
+                        label={t('expiryDate')}
+                        type="month"
+                        value={cert.expiryDate || ''}
+                        onChange={(e) =>
+                          updateCertification(cert.id, { expiryDate: e.target.value })
+                        }
+                      />
+                    </div>
+
+                    <FormInput
+                      label={t('credentialId')}
+                      placeholder="ABC123XYZ"
+                      value={cert.credentialId || ''}
+                      onChange={(e) =>
+                        updateCertification(cert.id, { credentialId: e.target.value })
                       }
-                      handleDragStart(e, index);
-                    }}
-                    onDragEnd={handleDragEnd}
-                    className="text-gray-400 cursor-grab hover:text-gray-600"
-                  >
-                    ⋮⋮
-                  </span>
-                  {t('certificationNumber', { number: index + 1 })}
-                </h3>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={() => removeCertification(cert.id)}
-                >
-                  {tCommon('remove')}
-                </Button>
-              </div>
+                    />
 
-              <div className="space-y-4">
-                <FormInput
-                  label={t('name')}
-                  placeholder="AWS Certified Solutions Architect"
-                  value={cert.name}
-                  onChange={(e) =>
-                    updateCertification(cert.id, { name: e.target.value })
-                  }
-                />
-
-                <FormInput
-                  label={t('issuer')}
-                  placeholder="Amazon Web Services"
-                  value={cert.issuer}
-                  onChange={(e) =>
-                    updateCertification(cert.id, { issuer: e.target.value })
-                  }
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormInput
-                    label={t('date')}
-                    type="month"
-                    value={cert.date}
-                    onChange={(e) =>
-                      updateCertification(cert.id, { date: e.target.value })
-                    }
-                  />
-
-                  <FormInput
-                    label={t('expiryDate')}
-                    type="month"
-                    value={cert.expiryDate || ''}
-                    onChange={(e) =>
-                      updateCertification(cert.id, { expiryDate: e.target.value })
-                    }
-                  />
-                </div>
-
-                <FormInput
-                  label={t('credentialId')}
-                  placeholder="ABC123XYZ"
-                  value={cert.credentialId || ''}
-                  onChange={(e) =>
-                    updateCertification(cert.id, { credentialId: e.target.value })
-                  }
-                />
-
-                <FormInput
-                  label={t('credentialUrl')}
-                  type="url"
-                  placeholder="https://www.certmetrics.com/..."
-                  value={cert.credentialUrl || ''}
-                  onChange={(e) =>
-                    updateCertification(cert.id, { credentialUrl: e.target.value })
-                  }
-                />
-              </div>
+                    <FormInput
+                      label={t('credentialUrl')}
+                      type="url"
+                      placeholder="https://www.certmetrics.com/..."
+                      value={cert.credentialUrl || ''}
+                      onChange={(e) =>
+                        updateCertification(cert.id, { credentialUrl: e.target.value })
+                      }
+                    />
+                  </div>
                 </div>
                 {placeholderPos === 'after' && (
                   <div

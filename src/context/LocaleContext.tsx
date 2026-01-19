@@ -49,11 +49,12 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
         const cvLocale = cvData.metadata.locale;
 
         // Priority: CV metadata > localStorage > default
-        const initialLocale = cvLocale && locales.includes(cvLocale as Locale)
-          ? (cvLocale as Locale)
-          : savedLocale && locales.includes(savedLocale as Locale)
-          ? (savedLocale as Locale)
-          : defaultLocale;
+        const initialLocale =
+          cvLocale && locales.includes(cvLocale as Locale)
+            ? (cvLocale as Locale)
+            : savedLocale && locales.includes(savedLocale as Locale)
+              ? (savedLocale as Locale)
+              : defaultLocale;
 
         setLocaleState(initialLocale);
         await loadMessages(initialLocale);
@@ -67,17 +68,20 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
     initLocale();
   }, [cvData.metadata.locale, loadMessages]);
 
-  const setLocale = useCallback((newLocale: Locale) => {
-    setLocaleState(newLocale);
-    saveLocale(newLocale);
-    loadMessages(newLocale);
+  const setLocale = useCallback(
+    (newLocale: Locale) => {
+      setLocaleState(newLocale);
+      saveLocale(newLocale);
+      loadMessages(newLocale);
 
-    // Update CV metadata with new locale
-    // This will trigger CVContext to auto-save
-    if (cvData.metadata.locale !== newLocale) {
-      updateCVLocale(newLocale);
-    }
-  }, [cvData.metadata.locale, updateCVLocale]);
+      // Update CV metadata with new locale
+      // This will trigger CVContext to auto-save
+      if (cvData.metadata.locale !== newLocale) {
+        updateCVLocale(newLocale);
+      }
+    },
+    [cvData.metadata.locale, updateCVLocale]
+  );
 
   const value: LocaleContextType = {
     locale,

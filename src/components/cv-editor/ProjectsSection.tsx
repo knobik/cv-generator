@@ -59,9 +59,7 @@ export function ProjectsSection() {
       }
     >
       {projects.length === 0 ? (
-        <p className="text-gray-500 text-center py-8">
-          {t('noProjects')}
-        </p>
+        <p className="text-gray-500 text-center py-8">{t('noProjects')}</p>
       ) : (
         <div
           ref={containerRef as React.RefObject<HTMLDivElement>}
@@ -92,105 +90,89 @@ export function ProjectsSection() {
                     isDragging(index) ? 'opacity-30' : ''
                   }`}
                 >
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-medium text-gray-900 flex items-center gap-2">
-                  <span
-                    draggable
-                    onDragStart={(e) => {
-                      const card = e.currentTarget.closest('.border') as HTMLElement;
-                      if (card) {
-                        e.dataTransfer.setDragImage(card, 20, 20);
-                      }
-                      handleDragStart(e, index);
-                    }}
-                    onDragEnd={handleDragEnd}
-                    className="text-gray-400 cursor-grab hover:text-gray-600"
-                  >
-                    ⋮⋮
-                  </span>
-                  {t('projectNumber', { number: index + 1 })}
-                </h3>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={() => removeProject(project.id)}
-                >
-                  {tCommon('remove')}
-                </Button>
-              </div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-medium text-gray-900 flex items-center gap-2">
+                      <span
+                        draggable
+                        onDragStart={(e) => {
+                          const card = e.currentTarget.closest('.border') as HTMLElement;
+                          if (card) {
+                            e.dataTransfer.setDragImage(card, 20, 20);
+                          }
+                          handleDragStart(e, index);
+                        }}
+                        onDragEnd={handleDragEnd}
+                        className="text-gray-400 cursor-grab hover:text-gray-600"
+                      >
+                        ⋮⋮
+                      </span>
+                      {t('projectNumber', { number: index + 1 })}
+                    </h3>
+                    <Button variant="danger" size="sm" onClick={() => removeProject(project.id)}>
+                      {tCommon('remove')}
+                    </Button>
+                  </div>
 
-              <div className="space-y-4">
-                <FormInput
-                  label={t('name')}
-                  placeholder="My Awesome Project"
-                  value={project.name}
-                  onChange={(e) =>
-                    updateProject(project.id, { name: e.target.value })
-                  }
-                />
+                  <div className="space-y-4">
+                    <FormInput
+                      label={t('name')}
+                      placeholder="My Awesome Project"
+                      value={project.name}
+                      onChange={(e) => updateProject(project.id, { name: e.target.value })}
+                    />
 
-                <FormTextarea
-                  label={t('description')}
-                  placeholder="Brief description of the project..."
-                  value={project.description}
-                  onChange={(e) =>
-                    updateProject(project.id, { description: e.target.value })
-                  }
-                  rows={3}
-                />
+                    <FormTextarea
+                      label={t('description')}
+                      placeholder="Brief description of the project..."
+                      value={project.description}
+                      onChange={(e) => updateProject(project.id, { description: e.target.value })}
+                      rows={3}
+                    />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormInput
-                    label={t('url')}
-                    type="url"
-                    placeholder="https://project.com"
-                    value={project.url || ''}
-                    onChange={(e) => updateProject(project.id, { url: e.target.value })}
-                  />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormInput
+                        label={t('url')}
+                        type="url"
+                        placeholder="https://project.com"
+                        value={project.url || ''}
+                        onChange={(e) => updateProject(project.id, { url: e.target.value })}
+                      />
 
-                  <FormInput
-                    label={t('githubUrl')}
-                    type="url"
-                    placeholder="https://github.com/user/project"
-                    value={project.githubUrl || ''}
-                    onChange={(e) => updateProject(project.id, { githubUrl: e.target.value })}
-                  />
-                </div>
+                      <FormInput
+                        label={t('githubUrl')}
+                        type="url"
+                        placeholder="https://github.com/user/project"
+                        value={project.githubUrl || ''}
+                        onChange={(e) => updateProject(project.id, { githubUrl: e.target.value })}
+                      />
+                    </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormInput
-                    label={t('startDate')}
-                    type="month"
-                    value={project.startDate || ''}
-                    onChange={(e) =>
-                      updateProject(project.id, { startDate: e.target.value })
-                    }
-                  />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormInput
+                        label={t('startDate')}
+                        type="month"
+                        value={project.startDate || ''}
+                        onChange={(e) => updateProject(project.id, { startDate: e.target.value })}
+                      />
 
-                  <FormInput
-                    label={t('endDate')}
-                    type="month"
-                    value={project.endDate || ''}
-                    onChange={(e) =>
-                      updateProject(project.id, { endDate: e.target.value })
-                    }
-                  />
-                </div>
+                      <FormInput
+                        label={t('endDate')}
+                        type="month"
+                        value={project.endDate || ''}
+                        onChange={(e) => updateProject(project.id, { endDate: e.target.value })}
+                      />
+                    </div>
 
-                <TechnologiesList
-                  technologies={project.technologies}
-                  onChange={(technologies) =>
-                    updateProject(project.id, { technologies })
-                  }
-                />
+                    <TechnologiesList
+                      technologies={project.technologies}
+                      onChange={(technologies) => updateProject(project.id, { technologies })}
+                    />
 
-                <HighlightsList
-                  highlights={project.highlights}
-                  onChange={(highlights) =>
-                    updateProject(project.id, { highlights })
-                  }
-                />
-              </div>
+                    <HighlightsList
+                      highlights={project.highlights}
+                      onChange={(highlights) => updateProject(project.id, { highlights })}
+                    />
+                  </div>
                 </div>
                 {placeholderPos === 'after' && (
                   <div
@@ -259,9 +241,7 @@ function TechnologiesList({
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        {t('technologies')}
-      </label>
+      <label className="block text-sm font-medium text-gray-700 mb-2">{t('technologies')}</label>
 
       {technologies.length > 0 && (
         <div
@@ -390,9 +370,7 @@ function HighlightsList({
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        {t('highlights')}
-      </label>
+      <label className="block text-sm font-medium text-gray-700 mb-2">{t('highlights')}</label>
 
       {highlights.length > 0 && (
         <ul
@@ -412,17 +390,13 @@ function HighlightsList({
                     onDragOver={(e) => handleDragOver(e, index)}
                     onDrop={(e) => handleDrop(e, index)}
                   >
-                    <span className="text-blue-400 text-sm truncate">
-                      {draggedItem}
-                    </span>
+                    <span className="text-blue-400 text-sm truncate">{draggedItem}</span>
                   </li>
                 )}
                 <li
                   onDragOver={(e) => handleDragOver(e, index)}
                   onDrop={(e) => handleDrop(e, index)}
-                  className={`flex items-center gap-2 ${
-                    isDragging(index) ? 'opacity-30' : ''
-                  }`}
+                  className={`flex items-center gap-2 ${isDragging(index) ? 'opacity-30' : ''}`}
                 >
                   <span
                     draggable
@@ -458,9 +432,7 @@ function HighlightsList({
                     onDragOver={(e) => handleDragOver(e, index)}
                     onDrop={(e) => handleDrop(e, index)}
                   >
-                    <span className="text-blue-400 text-sm truncate">
-                      {draggedItem}
-                    </span>
+                    <span className="text-blue-400 text-sm truncate">{draggedItem}</span>
                   </li>
                 )}
               </React.Fragment>

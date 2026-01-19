@@ -1,41 +1,41 @@
-import '@testing-library/jest-dom'
-import { cleanup } from '@testing-library/react'
-import { afterEach, vi } from 'vitest'
+import '@testing-library/jest-dom';
+import { cleanup } from '@testing-library/react';
+import { afterEach, vi } from 'vitest';
 
 // Cleanup after each test
 afterEach(() => {
-  cleanup()
-  localStorage.clear()
-  sessionStorage.clear()
-})
+  cleanup();
+  localStorage.clear();
+  sessionStorage.clear();
+});
 
 // Mock localStorage
 const localStorageMock = (() => {
-  let store: Record<string, string> = {}
+  let store: Record<string, string> = {};
 
   return {
     getItem: (key: string) => store[key] || null,
     setItem: (key: string, value: string) => {
-      store[key] = value.toString()
+      store[key] = value.toString();
     },
     removeItem: (key: string) => {
-      delete store[key]
+      delete store[key];
     },
     clear: () => {
-      store = {}
+      store = {};
     },
     get length() {
-      return Object.keys(store).length
+      return Object.keys(store).length;
     },
     key: (index: number) => {
-      const keys = Object.keys(store)
-      return keys[index] || null
+      const keys = Object.keys(store);
+      return keys[index] || null;
     },
-  }
-})()
+  };
+})();
 
-global.localStorage = localStorageMock as Storage
-global.sessionStorage = localStorageMock as Storage
+global.localStorage = localStorageMock as Storage;
+global.sessionStorage = localStorageMock as Storage;
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -50,7 +50,7 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
-})
+});
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
@@ -58,10 +58,10 @@ global.IntersectionObserver = class IntersectionObserver {
   disconnect() {}
   observe() {}
   takeRecords() {
-    return []
+    return [];
   }
   unobserve() {}
-} as any
+} as any;
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
@@ -69,4 +69,4 @@ global.ResizeObserver = class ResizeObserver {
   disconnect() {}
   observe() {}
   unobserve() {}
-} as any
+} as any;
