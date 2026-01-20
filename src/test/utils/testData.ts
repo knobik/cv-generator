@@ -96,7 +96,7 @@ export const mockCVData: CVData = {
   gdprClause: mockGDPRClause,
   metadata: {
     lastUpdated: '2026-01-11T00:00:00.000Z',
-    version: '1.0.0',
+    version: 0,
     locale: 'en',
   },
 }

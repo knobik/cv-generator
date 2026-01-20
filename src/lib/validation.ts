@@ -106,7 +106,7 @@ export const cvDataSchema = z.object({
   settings: settingsSchema.optional(),
   metadata: z.object({
     lastUpdated: z.string(),
-    version: z.string(),
+    version: z.number().int().nonnegative(),
     locale: z.string().optional(),
   }),
 });

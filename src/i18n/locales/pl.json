@@ -10,7 +10,8 @@
     "clearAll": "Wyczyść wszystko",
     "printPdf": "Drukuj / PDF",
     "exportHtml": "Eksportuj HTML",
-    "storage": "Pamięć"
+    "storage": "Pamięć",
+    "version": "Wersja"
   },
   "navigation": {
     "personalInfo": "Dane osobowe",

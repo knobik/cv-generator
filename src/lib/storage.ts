@@ -12,6 +12,25 @@ export class StorageError extends Error {
 }
 
 /**
+ * Migrate old CV data format to current format.
+ * Handles conversion of old semver string versions to integer versions.
+ */
+function migrateCVData(data: Record<string, unknown>): Record<string, unknown> {
+  const migrated = { ...data };
+
+  // Migrate old semver string version to integer
+  if (migrated.metadata && typeof migrated.metadata === 'object') {
+    const metadata = { ...(migrated.metadata as Record<string, unknown>) };
+    if (typeof metadata.version === 'string') {
+      metadata.version = 1;
+    }
+    migrated.metadata = metadata;
+  }
+
+  return migrated;
+}
+
+/**
  * Save CV data to localStorage
  */
 export function saveCVData(data: CVData): void {
@@ -51,8 +70,11 @@ export function loadCVData(): CVData | null {
 
     const parsedData = JSON.parse(jsonString);
 
+    // Apply migrations to handle old data formats
+    const migratedData = migrateCVData(parsedData);
+
     // Validate the loaded data
-    const validationResult = validateCVData(parsedData);
+    const validationResult = validateCVData(migratedData);
 
     if (!validationResult.success) {
       console.error('Invalid CV data in localStorage:', validationResult.error);
@@ -78,11 +100,23 @@ export function clearCVData(): void {
 }
 
 /**
- * Export CV data as JSON string
+ * Export CV data as JSON string with incremented version.
+ * Returns both the JSON string and the updated CVData with incremented version.
  */
-export function exportCVData(data: CVData): string {
+export function exportCVData(data: CVData): { jsonString: string; updatedData: CVData } {
   try {
-    return JSON.stringify(data, null, 2);
+    // Increment version for each export
+    const updatedData: CVData = {
+      ...data,
+      metadata: {
+        ...data.metadata,
+        version: data.metadata.version + 1,
+      },
+    };
+    return {
+      jsonString: JSON.stringify(updatedData, null, 2),
+      updatedData,
+    };
   } catch (error) {
     throw new StorageError('Failed to export CV data');
   }
@@ -96,7 +130,10 @@ export function importCVData(jsonString: string): CVData {
   try {
     const parsedData = JSON.parse(jsonString);
 
-    const validationResult = validateCVData(parsedData);
+    // Apply migrations to handle old data formats
+    const migratedData = migrateCVData(parsedData);
+
+    const validationResult = validateCVData(migratedData);
 
     if (!validationResult.success) {
       throw new StorageError('Invalid CV data format');

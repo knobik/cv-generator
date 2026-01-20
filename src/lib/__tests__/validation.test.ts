@@ -485,7 +485,7 @@ describe('Validation Layer', () => {
         },
         metadata: {
           lastUpdated: '2026-01-11T00:00:00.000Z',
-          version: '1.0.0',
+          version: 0,
         },
       }
       const result = cvDataSchema.safeParse(data)
@@ -511,7 +511,7 @@ describe('Validation Layer', () => {
         languages: [],
         metadata: {
           lastUpdated: '2026-01-11T00:00:00.000Z',
-          version: '1.0.0',
+          version: 0,
         },
       }
       const result = cvDataSchema.safeParse(data)
@@ -589,7 +589,7 @@ describe('Validation Layer', () => {
         },
         metadata: {
           lastUpdated: '2026-01-11',
-          version: '1.0.0',
+          version: 0,
         },
       }
       const result = cvDataSchema.safeParse(data)
@@ -634,7 +634,7 @@ describe('Validation Layer', () => {
         languages: [],
         metadata: {
           lastUpdated: '2026-01-11',
-          version: '1.0.0',
+          version: 0,
         },
       }
       const result = cvDataSchema.safeParse(data)
@@ -698,7 +698,7 @@ describe('Validation Layer', () => {
         },
         metadata: {
           lastUpdated: '2026-01-11',
-          version: '1.0.0',
+          version: 0,
         },
       }
       const result = validateCVData(data)

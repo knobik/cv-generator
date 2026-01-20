@@ -21,16 +21,25 @@ export function Header() {
   }, [cvData]);
 
   const handleExport = () => {
-    const jsonString = exportCVData(cvData);
+    // Export increments version and returns both JSON and updated data
+    const { jsonString, updatedData } = exportCVData(cvData);
+
+    // Save the updated data with incremented version
+    saveCVData(updatedData);
+
+    // Trigger file download
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `cv-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `cv-${updatedData.metadata.version}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+
+    // Reload to reflect the new version in the UI
+    window.location.reload();
   };
 
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,7 +79,7 @@ export function Header() {
             <div>
               <h1 className="text-2xl font-bold text-gray-900">{t('header.title')}</h1>
               <p className="text-xs text-gray-500">
-                {t('common.storage')}: {formatBytes(storageSize)}
+                {t('common.version')}: {cvData.metadata.version} | {t('common.storage')}: {formatBytes(storageSize)}
               </p>
             </div>
             <a

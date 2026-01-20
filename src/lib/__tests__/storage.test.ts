@@ -162,23 +162,43 @@ describe('Storage Functions', () => {
 
   describe('exportCVData', () => {
     test('should export CV as formatted JSON string', () => {
-      const exported = exportCVData(mockCVData)
-      expect(typeof exported).toBe('string')
+      const { jsonString } = exportCVData(mockCVData)
+      expect(typeof jsonString).toBe('string')
     })
 
     test('should include all CV fields', () => {
-      const exported = exportCVData(mockCVData)
-      const parsed = JSON.parse(exported)
+      const { jsonString } = exportCVData(mockCVData)
+      const parsed = JSON.parse(jsonString)
       expect(parsed.personalInfo).toBeDefined()
       expect(parsed.workExperience).toBeDefined()
       expect(parsed.education).toBeDefined()
     })
 
     test('should use 2-space indentation', () => {
-      const exported = exportCVData(mockCVData)
+      const { jsonString } = exportCVData(mockCVData)
       // Check that the exported string contains newlines and spaces (formatted)
-      expect(exported).toContain('\n')
-      expect(exported).toContain('  ')
+      expect(jsonString).toContain('\n')
+      expect(jsonString).toContain('  ')
+    })
+
+    test('should increment version on export', () => {
+      const originalVersion = mockCVData.metadata.version
+      const { updatedData, jsonString } = exportCVData(mockCVData)
+
+      // Updated data should have incremented version
+      expect(updatedData.metadata.version).toBe(originalVersion + 1)
+
+      // JSON string should contain incremented version
+      const parsed = JSON.parse(jsonString)
+      expect(parsed.metadata.version).toBe(originalVersion + 1)
+    })
+
+    test('should return both jsonString and updatedData', () => {
+      const result = exportCVData(mockCVData)
+      expect(result).toHaveProperty('jsonString')
+      expect(result).toHaveProperty('updatedData')
+      expect(typeof result.jsonString).toBe('string')
+      expect(result.updatedData).toHaveProperty('metadata')
     })
 
     test('should throw StorageError on failure', () => {
@@ -221,6 +241,37 @@ describe('Storage Functions', () => {
         expect(error).toBeInstanceOf(StorageError)
         expect((error as StorageError).message).toBeDefined()
       }
+    })
+
+    test('should migrate old semver string version to integer 1', () => {
+      // Create data with old semver format
+      const oldFormatData = {
+        ...mockCVData,
+        metadata: {
+          ...mockCVData.metadata,
+          version: '1.0.0', // Old semver string format
+        },
+      }
+      const jsonString = JSON.stringify(oldFormatData)
+      const imported = importCVData(jsonString)
+
+      // Should be migrated to integer 1
+      expect(imported.metadata.version).toBe(1)
+      expect(typeof imported.metadata.version).toBe('number')
+    })
+
+    test('should preserve integer version on import', () => {
+      const dataWithIntVersion = {
+        ...mockCVData,
+        metadata: {
+          ...mockCVData.metadata,
+          version: 5,
+        },
+      }
+      const jsonString = JSON.stringify(dataWithIntVersion)
+      const imported = importCVData(jsonString)
+
+      expect(imported.metadata.version).toBe(5)
     })
   })
 

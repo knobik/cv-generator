@@ -100,7 +100,7 @@ export interface CVData {
   settings?: CVSettings;
   metadata: {
     lastUpdated: string;
-    version: string;
+    version: number;
     locale: string;
   };
 }
@@ -130,7 +130,7 @@ export const EMPTY_CV_DATA: CVData = {
   },
   metadata: {
     lastUpdated: new Date().toISOString(),
-    version: '1.0.0',
+    version: 0,
     locale: 'en',
   },
 };
